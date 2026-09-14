@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ONI GAMING ZONE — 3D Interactive Live Monitoring</title>
+  <title>ONI GAMING ZONE — Interactive Live Monitoring</title>
   
   <!-- Font & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg-dark); color: #f8fafc; line-height: 1.5; overflow-x: hidden; }
 
-    /* Header & Hero */
+    /* Header */
     header {
       position: relative;
       background: linear-gradient(180deg, rgba(7, 8, 12, 0.8) 0%, var(--bg-dark) 100%), 
@@ -73,9 +73,9 @@
     header h1 span { color: var(--accent-green); }
     header p { color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 5px auto 0; }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 25px 15px; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 25px 15px; }
 
-    /* Weekend Warning Banner */
+    /* Warning Banner Weekend */
     .weekend-notice {
       display: none;
       background: rgba(255, 170, 0, 0.1);
@@ -113,16 +113,15 @@
 
     .section-title i { color: var(--accent-green); }
 
-    /* ================= 3D ISOMETRIC ARENA STYLES ================= */
+    /* ================= 3D ARENA STYLES (ENHANCED) ================= */
     .arena-3d-wrapper {
-      background: radial-gradient(circle at center, #181b28 0%, #0d0e15 100%);
-      border: 1px solid rgba(0, 255, 102, 0.15);
+      background: #0d0f17;
+      border: 1px solid rgba(0, 255, 102, 0.2);
       border-radius: 20px;
-      padding: 30px 15px 50px;
+      padding: 30px 15px;
       margin-bottom: 40px;
-      overflow: hidden;
       position: relative;
-      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
 
     .arena-controls-hint {
@@ -142,32 +141,29 @@
     }
 
     .perspective-stage {
-      perspective: 1000px;
+      perspective: 800px;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 480px;
+      padding: 20px 0;
     }
 
     .room-3d-grid {
       transform-style: preserve-3d;
-      transform: rotateX(55deg) rotateZ(-30deg);
-      transition: transform 0.5s ease-out;
+      transform: rotateX(25deg); /* Sudut miring lembut agar tulisan tetap jelas */
       display: flex;
       flex-direction: column;
-      gap: 40px;
-      padding: 20px;
+      gap: 30px;
+      width: 100%;
+      max-width: 800px;
     }
 
-    /* Meja Row Structure */
+    /* Desk Container 3D */
     .desk-row-3d {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
       background: rgba(255, 255, 255, 0.02);
-      border: 1px dashed rgba(255, 255, 255, 0.08);
-      padding: 15px;
-      border-radius: 12px;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      padding: 20px 15px 15px;
+      border-radius: 14px;
       position: relative;
     }
 
@@ -175,118 +171,116 @@
       position: absolute;
       top: -12px;
       left: 15px;
-      background: #000;
+      background: #07080c;
       border: 1px solid var(--border-color);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.65rem;
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
       font-weight: 700;
       color: var(--text-muted);
-      transform: rotateX(-55deg);
+      letter-spacing: 0.5px;
     }
 
-    /* 3D PC Node Unit */
+    .nodes-flex {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* 3D PC Node Unit (Card Timbul) */
     .pc-3d-node {
-      width: 110px;
-      height: 120px;
-      background: rgba(18, 20, 28, 0.9);
+      width: 120px;
+      min-height: 110px;
+      background: #141724;
       border: 2px solid var(--border-color);
       border-radius: 12px;
       transform-style: preserve-3d;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.25 ease;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 6px;
+      padding: 10px 8px;
       cursor: pointer;
       position: relative;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 0 #090a10, 0 12px 15px rgba(0,0,0,0.5); /* Efek tebal 3D di bawah */
     }
 
     .pc-3d-node:hover {
-      transform: translateZ(15px) scale(1.05);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 0 #090a10, 0 16px 20px rgba(0,0,0,0.6);
+    }
+
+    .pc-3d-node:active {
+      transform: translateY(2px);
+      box-shadow: 0 4px 0 #090a10, 0 6px 10px rgba(0,0,0,0.4);
     }
 
     /* Status Lighting Effects 3D */
     /* 1. TERPAKAI (Red Glow) */
     .pc-3d-node.state-used {
       border-color: rgba(255, 42, 95, 0.8) !important;
-      background: linear-gradient(135deg, rgba(255, 42, 95, 0.25) 0%, rgba(18, 20, 28, 0.95) 100%) !important;
-      box-shadow: 0 0 25px rgba(255, 42, 95, 0.4), inset 0 0 15px rgba(255, 42, 95, 0.2) !important;
+      background: #24121a !important;
+      box-shadow: 0 8px 0 #12070d, 0 0 20px rgba(255, 42, 95, 0.4) !important;
     }
 
     /* 2. TERSEDIA (Green Glow) */
     .pc-3d-node.state-available {
-      border-color: rgba(0, 255, 102, 0.5) !important;
-      background: linear-gradient(135deg, rgba(0, 255, 102, 0.15) 0%, rgba(18, 20, 28, 0.95) 100%) !important;
-      box-shadow: 0 0 15px rgba(0, 255, 102, 0.2) !important;
+      border-color: rgba(0, 255, 102, 0.6) !important;
+      background: #102419 !important;
+      box-shadow: 0 8px 0 #06140d, 0 0 15px rgba(0, 255, 102, 0.25) !important;
     }
 
     /* 3. OFF (Dimmed Dark) */
     .pc-3d-node.state-off {
       border-color: rgba(255, 255, 255, 0.05) !important;
-      background: rgba(5, 6, 8, 0.8) !important;
-      opacity: 0.4;
-      box-shadow: none !important;
+      background: #0c0d12 !important;
+      opacity: 0.45;
+      box-shadow: 0 4px 0 #040508 !important;
     }
 
-    /* 3D Monitor Icon & Details */
-    .monitor-screen-3d {
-      width: 45px;
-      height: 32px;
-      background: #000;
-      border: 2px solid #333;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      margin-top: 4px;
+    .monitor-icon-3d {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
     }
 
-    .pc-3d-node.state-used .monitor-screen-3d {
-      border-color: var(--accent-red);
-      background: rgba(255, 42, 95, 0.2);
-    }
-
-    .pc-3d-node.state-available .monitor-screen-3d {
-      border-color: var(--accent-green);
-      background: rgba(0, 255, 102, 0.2);
-    }
+    .pc-3d-node.state-used .monitor-icon-3d { color: var(--accent-red); }
+    .pc-3d-node.state-available .monitor-icon-3d { color: var(--accent-green); }
+    .pc-3d-node.state-off .monitor-icon-3d { color: var(--text-muted); }
 
     .pc-number-3d {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 800;
       color: #fff;
     }
 
     .node-status-text {
-      font-size: 0.65rem;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 3px 6px;
+      border-radius: 6px;
       width: 100%;
       text-align: center;
+      margin-top: 4px;
     }
 
-    .pc-3d-node.state-used .node-status-text { background: rgba(255, 42, 95, 0.3); color: #ff88a5; }
-    .pc-3d-node.state-available .node-status-text { background: rgba(0, 255, 102, 0.3); color: #88ffbb; }
-    .pc-3d-node.state-off .node-status-text { background: rgba(255, 255, 255, 0.1); color: #666; }
+    .pc-3d-node.state-used .node-status-text { background: rgba(255, 42, 95, 0.25); color: #ff88a5; }
+    .pc-3d-node.state-available .node-status-text { background: rgba(0, 255, 102, 0.25); color: #88ffbb; }
+    .pc-3d-node.state-off .node-status-text { background: rgba(255, 255, 255, 0.1); color: #777; }
 
-    /* Floating Timer Badge diatas PC 3D */
+    /* Floating Timer Badge */
     .float-timer-3d {
       position: absolute;
-      top: -22px;
-      background: #000;
-      border: 1px solid var(--accent-red);
+      top: -12px;
+      background: #ff2a5f;
       color: #fff;
       font-size: 0.65rem;
       font-weight: 800;
       padding: 2px 6px;
       border-radius: 6px;
-      box-shadow: 0 0 10px rgba(255, 42, 95, 0.5);
+      box-shadow: 0 0 10px rgba(255, 42, 95, 0.6);
       white-space: nowrap;
     }
 
@@ -427,14 +421,13 @@
   <header>
     <div class="brand-tag"><i class="fas fa-bolt"></i> CYBER CAFE IN TANGERANG</div>
     
-    <!-- Status Operator Indikator -->
     <div class="admin-badge-container" id="adminBadge">
       <span class="status-dot" id="adminDot" style="background: #64748b; width:7px; height:7px; border-radius:50%; display:inline-block;"></span>
       <span id="adminText" style="color: #94a3b8;">OPERATOR OFFLINE</span>
     </div>
 
     <h1>ONI GAMING <span>ZONE</span></h1>
-    <p>3D Interactive Live Monitoring & Reservation Hub</p>
+    <p>3D Live Monitoring & Reservation Hub</p>
   </header>
 
   <div class="container">
@@ -445,40 +438,38 @@
       <span><strong>PERHATIAN:</strong> Booking via WhatsApp TIDAK TERSEDIA pada hari Sabtu & Minggu (Khusus Walk-In / Datang Langsung).</span>
     </div>
 
-    <!-- 3D ISOMETRIC ARENA LIVE MONITORING -->
+    <!-- 3D ARENA LIVE MONITORING -->
     <div class="section-header">
-      <div class="section-title"><i class="fas fa-cubes"></i> 3D ARENA LAYOUT MONITORING</div>
+      <div class="section-title"><i class="fas fa-cubes"></i> 3D DENAH LOKASI PC</div>
     </div>
 
     <div class="arena-3d-wrapper">
       <div class="arena-controls-hint">
-        <i class="fas fa-hand-pointer"></i> Klik PC 3D untuk melihat info & booking
+        <i class="fas fa-hand-pointer"></i> Klik PC untuk booking
       </div>
 
       <div class="perspective-stage">
-        <div class="room-3d-grid" id="room3d">
+        <div class="room-3d-grid">
           
-          <!-- BARIS DEPAN: ONI-01 s/d ONI-03 (Menghadap Depan) -->
+          <!-- BARIS DEPAN: ONI-01 s/d ONI-03 -->
           <div class="desk-row-3d">
-            <span class="desk-label"><i class="fas fa-arrow-up"></i> MEJA BARIS DEPAN (ONI 01 - 03)</span>
-            <div id="node-ONI-01"></div>
-            <div id="node-ONI-02"></div>
-            <div id="node-ONI-03"></div>
+            <span class="desk-label"><i class="fas fa-desktop"></i> MEJA BARIS DEPAN (ONI 01 - 03)</span>
+            <div class="nodes-flex">
+              <div id="node-ONI-01"></div>
+              <div id="node-ONI-02"></div>
+              <div id="node-ONI-03"></div>
+            </div>
           </div>
 
           <!-- BARIS ISLAND BERHADAPAN: ONI-04 s/d ONI-09 -->
-          <div class="desk-row-3d" style="flex-direction: column; gap: 20px; border-color: rgba(0, 255, 102, 0.2);">
+          <div class="desk-row-3d">
             <span class="desk-label"><i class="fas fa-users"></i> MEJA ISLAND BERHADAPAN (ONI 04 - 09)</span>
-            
-            <!-- Sisi Atas: ONI-04 s/d ONI-06 -->
-            <div style="display: flex; gap: 15px; justify-content: center;">
+            <div class="nodes-flex" style="margin-bottom: 15px;">
               <div id="node-ONI-04"></div>
               <div id="node-ONI-05"></div>
               <div id="node-ONI-06"></div>
             </div>
-
-            <!-- Sisi Bawah: ONI-07 s/d ONI-09 -->
-            <div style="display: flex; gap: 15px; justify-content: center;">
+            <div class="nodes-flex">
               <div id="node-ONI-07"></div>
               <div id="node-ONI-08"></div>
               <div id="node-ONI-09"></div>
@@ -514,7 +505,7 @@
       </div>
     </div>
 
-    <!-- Map & Galeri -->
+    <!-- Map -->
     <div class="section-header">
       <div class="section-title"><i class="fas fa-map-marker-alt"></i> LOKASI ARENA</div>
     </div>
@@ -550,7 +541,6 @@
     const adminBadge = document.getElementById('adminBadge');
     const weekendNotice = document.getElementById('weekendNotice');
     
-    // Check Hari Weekend
     const today = new Date().getDay();
     const isWeekend = (today === 0 || today === 6);
     if (isWeekend) weekendNotice.style.display = 'flex';
@@ -598,7 +588,6 @@
       const pcData = payload.pcData || payload;
       const adminActive = payload.adminActive || false;
 
-      // Operator Indicator
       if (adminActive) {
         adminDot.style.background = '#00ff66';
         adminText.innerText = 'OPERATOR ONLINE';
@@ -632,8 +621,8 @@
         targetNode.innerHTML = `
           <div class="pc-3d-node ${stateClass}" onclick="openModal('${pc.id}', '${pc.status}')">
             ${floatTimerHTML}
-            <div class="monitor-screen-3d">
-              <i class="fas fa-desktop" style="font-size:0.75rem;"></i>
+            <div class="monitor-icon-3d">
+              <i class="fas fa-desktop"></i>
             </div>
             <span class="pc-number-3d">${pc.id}</span>
             <span class="node-status-text">${statusText}</span>
