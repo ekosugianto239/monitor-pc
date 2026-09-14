@@ -116,7 +116,7 @@
 
     .section-title i { color: var(--accent-blue); }
 
-    /* ================= RESPONSIVE MOBILE ARENA STYLES ================= */
+    /* Arena Layout Styles */
     .arena-3d-wrapper {
       background: radial-gradient(circle at top center, #18132e 0%, #080912 100%);
       border: 2px solid rgba(138, 43, 226, 0.4);
@@ -125,7 +125,7 @@
       margin-bottom: 30px;
       position: relative;
       box-shadow: 0 0 30px rgba(138, 43, 226, 0.25);
-      overflow-x: auto; /* Bisa scroll samping jika di HP super kecil */
+      overflow-x: auto;
     }
 
     .arena-controls-hint {
@@ -160,7 +160,7 @@
       max-width: 800px;
     }
 
-    /* Double-Deck Desk Frame */
+    /* Desk Container */
     .desk-row-3d {
       background: rgba(18, 20, 32, 0.85);
       border: 2px solid #252a40;
@@ -184,15 +184,14 @@
       white-space: nowrap;
     }
 
-    /* KUNCI SUPAYA 3 PC SELALU SEJAJAR TANPA TURUN */
     .nodes-flex {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); /* Tetap 3 Kolom Sejajar */
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       width: 100%;
     }
 
-    /* 3D PC Card Unit (Ukuran Otomatis Mengikuti Layar) */
+    /* PC Node Unit */
     .pc-3d-node {
       width: 100%;
       min-height: 115px;
@@ -215,7 +214,6 @@
       box-shadow: 0 2px 0 #070810;
     }
 
-    /* Upper CPU Shelf */
     .cpu-shelf-visual {
       width: 100%;
       height: 16px;
@@ -236,8 +234,7 @@
       background: #333;
     }
 
-    /* Status Lighting Effects Realtime */
-    /* 1. TERPAKAI (Red Neon Glow) */
+    /* Status Lighting */
     .pc-3d-node.state-used {
       border-color: rgba(255, 42, 95, 0.9) !important;
       background: #28111c !important;
@@ -248,7 +245,6 @@
       box-shadow: 0 0 6px var(--accent-red);
     }
 
-    /* 2. TERSEDIA (Green Neon Glow) */
     .pc-3d-node.state-available {
       border-color: rgba(0, 255, 102, 0.7) !important;
       background: #0d2618 !important;
@@ -259,7 +255,6 @@
       box-shadow: 0 0 6px var(--accent-green);
     }
 
-    /* 3. OFF (Dimmed Dark) */
     .pc-3d-node.state-off {
       border-color: rgba(255, 255, 255, 0.05) !important;
       background: #0b0c12 !important;
@@ -267,20 +262,12 @@
       box-shadow: 0 3px 0 #030406 !important;
     }
 
-    .monitor-icon-3d {
-      font-size: 1.1rem;
-      margin-bottom: 2px;
-    }
-
+    .monitor-icon-3d { font-size: 1.1rem; margin-bottom: 2px; }
     .pc-3d-node.state-used .monitor-icon-3d { color: var(--accent-red); }
     .pc-3d-node.state-available .monitor-icon-3d { color: var(--accent-green); }
     .pc-3d-node.state-off .monitor-icon-3d { color: var(--text-muted); }
 
-    .pc-number-3d {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: #fff;
-    }
+    .pc-number-3d { font-size: 0.85rem; font-weight: 800; color: #fff; }
 
     .node-status-text {
       font-size: 0.6rem;
@@ -297,7 +284,6 @@
     .pc-3d-node.state-available .node-status-text { background: rgba(0, 255, 102, 0.3); color: #88ffbb; }
     .pc-3d-node.state-off .node-status-text { background: rgba(255, 255, 255, 0.1); color: #777; }
 
-    /* Floating Timer Badge */
     .float-timer-3d {
       position: absolute;
       top: -12px;
@@ -362,7 +348,6 @@
     .spec-list li span { color: var(--text-muted); font-weight: 600; }
     .price-badge { background: rgba(255, 255, 255, 0.05); padding: 3px 6px; border-radius: 6px; color: var(--accent-green) !important; font-weight: 700 !important; }
 
-    /* Map & Gallery */
     .map-container {
       width: 100%;
       height: 280px;
@@ -453,7 +438,7 @@
       <span><strong>PERHATIAN:</strong> Booking via WA TIDAK TERSEDIA pada Sabtu & Minggu (Khusus Walk-In).</span>
     </div>
 
-    <!-- 3D ARENA LIVE MONITORING HASIL RESPONSIVE SERAGAM -->
+    <!-- 3D ARENA LIVE MONITORING -->
     <div class="section-header">
       <div class="section-title"><i class="fas fa-cubes"></i> DENAH ARENA REALTIME</div>
     </div>
@@ -466,7 +451,7 @@
       <div class="perspective-stage">
         <div class="room-3d-grid">
           
-          <!-- MEJA DEPAN: ONI-01 s/d ONI-03 (3 Kolom Sejajar) -->
+          <!-- MEJA DEPAN: ONI-01 s/d ONI-03 -->
           <div class="desk-row-3d">
             <span class="desk-label"><i class="fas fa-desktop"></i> BARIS DEPAN (ONI 01 - 03)</span>
             <div class="nodes-flex">
@@ -549,7 +534,7 @@
     <p>&copy; BIMA TECH INDONESIA. All Rights Reserved.</p>
   </footer>
 
-  <!-- Realtime Socket Sync -->
+  <!-- Realtime Persistent Socket & Timer Sync -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
@@ -601,21 +586,18 @@
       document.getElementById('bookingModal').style.display = 'none';
     }
 
-    socket.on('pcStatusUpdate', (payload) => {
-      const pcData = payload.pcData || payload;
-      const adminActive = payload.adminActive || false;
-
-      if (adminActive) {
-        adminDot.style.background = '#00ff66';
-        adminText.innerText = 'OPERATOR ONLINE';
-        adminText.style.color = '#00ff66';
-      } else {
-        adminDot.style.background = '#64748b';
-        adminText.innerText = 'OPERATOR OFFLINE';
-        adminText.style.color = '#94a3b8';
+    function renderPCData(pcList, adminActive) {
+      if (adminActive !== undefined) {
+        if (adminActive) {
+          adminDot.style.background = '#00ff66';
+          adminText.innerText = 'OPERATOR ONLINE';
+          adminText.style.color = '#00ff66';
+        } else {
+          adminDot.style.background = '#64748b';
+          adminText.innerText = 'OPERATOR OFFLINE';
+          adminText.style.color = '#94a3b8';
+        }
       }
-
-      const pcList = Array.isArray(pcData) ? pcData : Object.values(pcData);
 
       pcList.forEach((pc) => {
         const targetNode = document.getElementById(`node-${pc.id}`);
@@ -651,7 +633,36 @@
           </div>
         `;
       });
+    }
+
+    // Load data awal dari cache lokal browser
+    const cachedData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
+    if (Object.keys(cachedData).length > 0) {
+      renderPCData(Object.values(cachedData), false);
+    }
+
+    // Sync data realtime dari server kasir
+    socket.on('pcStatusUpdate', (payload) => {
+      const pcData = payload.pcData || payload;
+      const adminActive = payload.adminActive || false;
+      const pcList = Array.isArray(pcData) ? pcData : Object.values(pcData);
+
+      // Simpan state terbaru ke LocalStorage
+      const storageObj = {};
+      pcList.forEach(pc => storageObj[pc.id] = pc);
+      localStorage.setItem('oni_pc_status', JSON.stringify(storageObj));
+
+      renderPCData(pcList, adminActive);
     });
+
+    // Auto update countdown setiap 1 detik
+    setInterval(() => {
+      const localData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
+      const list = Object.values(localData);
+      if (list.length > 0) {
+        renderPCData(list);
+      }
+    }, 1000);
   </script>
 </body>
 </html>
