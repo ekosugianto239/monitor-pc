@@ -4,7 +4,7 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const path = require('path');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = "oni123"; // Ganti password kasir di sini
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -13,8 +13,7 @@ app.use(express.json());
 let pcStatusData = {};
 for (let i = 1; i <= 9; i++) {
   const pcKey = `ONI-${i < 10 ? '0' + i : i}`;
-  const vga = (i === 2 || i === 3 || i === 4) ? '' : '';
-  pcStatusData[pcKey] = { id: pcKey, status: 'available', vga: vga, endTime: null };
+  pcStatusData[pcKey] = { id: pcKey, status: 'available', vga: 'RTX 2060', endTime: null };
 }
 
 // Menampung timestamp terakhir sinyal dari admin.html
@@ -112,6 +111,10 @@ io.on('connection', (socket) => {
   broadcastState();
 });
 
-http.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server Dashboard berjalan di http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  http.listen(PORT, () => {
+    console.log(`Server Dashboard berjalan di http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

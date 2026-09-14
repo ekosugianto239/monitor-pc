@@ -176,7 +176,7 @@
   <!-- Grid PC Monitoring -->
   <div class="pc-grid" id="adminGrid"></div>
 
-  <!-- Socket.IO Engine -->
+  <!-- Socket.IO Engine & Local Storage Persistence -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
@@ -201,6 +201,30 @@
     // Fungsi Pengirim Data Update Manual
     function setStatus(pcKey, status, hours = 0, packageType = '') {
       const pass = document.getElementById('adminPass').value;
+      
+      // Update data langsung secara lokal untuk responsivitas instan
+      const now = Math.floor(Date.now() / 1000);
+      let targetEndTime = 0;
+
+      if (status === 'used') {
+        if (hours > 0) {
+          targetEndTime = now + (hours * 3600);
+        } else if (packageType === 'pagi') {
+          const t = new Date(); t.setHours(12, 0, 0, 0);
+          if (t.getTime() / 1000 <= now) t.setDate(t.getDate() + 1);
+          targetEndTime = Math.floor(t.getTime() / 1000);
+        } else if (packageType === 'malam') {
+          const t = new Date(); t.setHours(6, 0, 0, 0);
+          if (t.getTime() / 1000 <= now) t.setDate(t.getDate() + 1);
+          targetEndTime = Math.floor(t.getTime() / 1000);
+        }
+      }
+
+      const localCache = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
+      localCache[pcKey] = { id: pcKey, status: status, endTime: targetEndTime };
+      localStorage.setItem('oni_pc_status', JSON.stringify(localCache));
+      renderAdminGrid(Object.values(localCache));
+
       fetch('/api/update-manual', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -216,24 +240,29 @@
       });
     }
 
-    socket.on('pcStatusUpdate', (payload) => {
+    function renderAdminGrid(pcList) {
       const grid = document.getElementById('adminGrid');
       grid.innerHTML = '';
+      const now = Math.floor(Date.now() / 1000);
       
-      // Membaca pcData dari object payload Socket.IO
-      const pcData = payload.pcData || payload;
-      const list = Array.isArray(pcData) ? pcData : Object.values(pcData);
-      
-      list.forEach(pc => {
-        const countdownText = formatCountdown(pc.endTime);
+      pcList.forEach(pc => {
+        let currentStatus = pc.status;
+        let endTime = pc.endTime;
+
+        if (endTime && endTime <= now) {
+          currentStatus = 'available';
+          endTime = 0;
+        }
+
+        const countdownText = formatCountdown(endTime);
         
         let statusStyle = 'background: rgba(0, 255, 102, 0.1); color: #00ff66; border: 1px solid rgba(0, 255, 102, 0.2);';
         let statusLabel = 'TERSEDIA';
 
-        if (pc.status === 'used') {
+        if (currentStatus === 'used') {
           statusStyle = 'background: rgba(255, 42, 95, 0.1); color: #ff2a5f; border: 1px solid rgba(255, 42, 95, 0.2);';
           statusLabel = countdownText ? `TERPAKAI ${countdownText}` : 'TERPAKAI';
-        } else if (pc.status === 'off') {
+        } else if (currentStatus === 'off') {
           statusStyle = 'background: rgba(148, 163, 184, 0.1); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2);';
           statusLabel = 'OFF / MATI';
         }
@@ -243,7 +272,6 @@
             <div class="pc-header">${pc.id}</div>
             <div class="status-badge" style="${statusStyle}">${statusLabel}</div>
             
-            <!-- Tambah Jam Reguler (+1j, +2j, +3j, +5j) -->
             <div class="btn-section-title">Billing Reguler</div>
             <div class="btn-group">
               <button class="btn btn-time" onclick="setStatus('${pc.id}', 'used', 1)">+1j</button>
@@ -252,14 +280,12 @@
               <button class="btn btn-time" onclick="setStatus('${pc.id}', 'used', 5)">+5j</button>
             </div>
 
-            <!-- Tambah Paket Pagi / Malam Auto Time -->
             <div class="btn-section-title">Paket Khusus</div>
             <div class="btn-group">
               <button class="btn btn-pkg" onclick="setStatus('${pc.id}', 'used', 0, 'pagi')" title="Otomatis selesai jam 12.00 WIB"><i class="fas fa-sun"></i> P. Pagi</button>
               <button class="btn btn-pkg" onclick="setStatus('${pc.id}', 'used', 0, 'malam')" title="Otomatis selesai jam 06.00 WIB"><i class="fas fa-moon"></i> P. Malam</button>
             </div>
 
-            <!-- Kontrol Status -->
             <div class="btn-section-title">Kontrol Status</div>
             <div class="btn-group">
               <button class="btn btn-avail" onclick="setStatus('${pc.id}', 'available')"><i class="fas fa-check"></i> Reset</button>
@@ -268,9 +294,36 @@
           </div>
         `;
       });
+    }
+
+    // Load data awal dari cache lokal browser
+    const cachedAdminData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
+    if (Object.keys(cachedAdminData).length > 0) {
+      renderAdminGrid(Object.values(cachedAdminData));
+    }
+
+    // Listener sync Socket.IO
+    socket.on('pcStatusUpdate', (payload) => {
+      const pcData = payload.pcData || payload;
+      const list = Array.isArray(pcData) ? pcData : Object.values(pcData);
+      
+      const storageObj = {};
+      list.forEach(pc => storageObj[pc.id] = pc);
+      localStorage.setItem('oni_pc_status', JSON.stringify(storageObj));
+
+      renderAdminGrid(list);
     });
 
-    // Kirim sinyal periodic heartbeat ke server setiap 3 detik
+    // Auto-refresh countdown setiap 1 detik
+    setInterval(() => {
+      const localData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
+      const list = Object.values(localData);
+      if (list.length > 0) {
+        renderAdminGrid(list);
+      }
+    }, 1000);
+
+    // Kirim sinyal heartbeat ke server
     setInterval(() => {
       fetch('/api/admin-heartbeat', { method: 'POST' });
     }, 3000);

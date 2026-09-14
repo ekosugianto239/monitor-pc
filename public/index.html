@@ -599,26 +599,37 @@
         }
       }
 
+      const now = Math.floor(Date.now() / 1000);
+
       pcList.forEach((pc) => {
         const targetNode = document.getElementById(`node-${pc.id}`);
         if (!targetNode) return;
 
-        const countdown = formatCountdown(pc.endTime);
+        let currentStatus = pc.status;
+        let endTime = pc.endTime;
+
+        // Auto-expire jika durasi timer di masa lalu
+        if (endTime && endTime <= now) {
+          currentStatus = 'available';
+          endTime = 0;
+        }
+
+        const countdown = formatCountdown(endTime);
         let stateClass = 'state-available';
         let statusText = 'READY';
 
-        if (pc.status === 'off') {
+        if (currentStatus === 'off') {
           stateClass = 'state-off';
           statusText = 'OFF';
-        } else if (pc.status === 'used') {
+        } else if (currentStatus === 'used') {
           stateClass = 'state-used';
           statusText = countdown ? countdown : 'USED';
         }
 
-        const floatTimerHTML = (pc.status === 'used' && countdown) ? `<div class="float-timer-3d">${countdown}</div>` : '';
+        const floatTimerHTML = (currentStatus === 'used' && countdown) ? `<div class="float-timer-3d">${countdown}</div>` : '';
 
         targetNode.innerHTML = `
-          <div class="pc-3d-node ${stateClass}" onclick="openModal('${pc.id}', '${pc.status}')">
+          <div class="pc-3d-node ${stateClass}" onclick="openModal('${pc.id}', '${currentStatus}')">
             ${floatTimerHTML}
             <div class="cpu-shelf-visual">
               <span class="cpu-led-strip"></span>
@@ -635,19 +646,19 @@
       });
     }
 
-    // Load data awal dari cache lokal browser
+    // Load data awal dari LocalStorage browser
     const cachedData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
     if (Object.keys(cachedData).length > 0) {
       renderPCData(Object.values(cachedData), false);
     }
 
-    // Sync data realtime dari server kasir
+    // Sync data realtime dari Socket.IO
     socket.on('pcStatusUpdate', (payload) => {
       const pcData = payload.pcData || payload;
       const adminActive = payload.adminActive || false;
       const pcList = Array.isArray(pcData) ? pcData : Object.values(pcData);
 
-      // Simpan state terbaru ke LocalStorage
+      // Simpan pembaruan status ke LocalStorage
       const storageObj = {};
       pcList.forEach(pc => storageObj[pc.id] = pc);
       localStorage.setItem('oni_pc_status', JSON.stringify(storageObj));
@@ -655,7 +666,7 @@
       renderPCData(pcList, adminActive);
     });
 
-    // Auto update countdown setiap 1 detik
+    // Loop interval 1 detik untuk menghitung mundur timer secara independen
     setInterval(() => {
       const localData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
       const list = Object.values(localData);
