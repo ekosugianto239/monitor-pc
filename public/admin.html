@@ -181,6 +181,13 @@
   <script>
     const socket = io();
 
+    // Default ONI-01 s/d ONI-09
+    const defaultPCState = {};
+    for (let i = 1; i <= 9; i++) {
+      const pcId = `ONI-${i < 10 ? '0' + i : i}`;
+      defaultPCState[pcId] = { id: pcId, status: 'available', endTime: 0 };
+    }
+
     function formatCountdown(endTime) {
       if (!endTime) return '';
       const now = Math.floor(Date.now() / 1000);
@@ -202,7 +209,6 @@
     function setStatus(pcKey, status, hours = 0, packageType = '') {
       const pass = document.getElementById('adminPass').value;
       
-      // Update data langsung secara lokal untuk responsivitas instan
       const now = Math.floor(Date.now() / 1000);
       let targetEndTime = 0;
 
@@ -223,7 +229,9 @@
       const localCache = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
       localCache[pcKey] = { id: pcKey, status: status, endTime: targetEndTime };
       localStorage.setItem('oni_pc_status', JSON.stringify(localCache));
-      renderAdminGrid(Object.values(localCache));
+      
+      const merged = { ...defaultPCState, ...localCache };
+      renderAdminGrid(Object.values(merged));
 
       fetch('/api/update-manual', {
         method: 'POST',
@@ -296,11 +304,10 @@
       });
     }
 
-    // Load data awal dari cache lokal browser
+    // Load data awal langsung dari gabungan default + cache lokal
     const cachedAdminData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
-    if (Object.keys(cachedAdminData).length > 0) {
-      renderAdminGrid(Object.values(cachedAdminData));
-    }
+    const initialMerged = { ...defaultPCState, ...cachedAdminData };
+    renderAdminGrid(Object.values(initialMerged));
 
     // Listener sync Socket.IO
     socket.on('pcStatusUpdate', (payload) => {
@@ -311,16 +318,15 @@
       list.forEach(pc => storageObj[pc.id] = pc);
       localStorage.setItem('oni_pc_status', JSON.stringify(storageObj));
 
-      renderAdminGrid(list);
+      const merged = { ...defaultPCState, ...storageObj };
+      renderAdminGrid(Object.values(merged));
     });
 
     // Auto-refresh countdown setiap 1 detik
     setInterval(() => {
       const localData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
-      const list = Object.values(localData);
-      if (list.length > 0) {
-        renderAdminGrid(list);
-      }
+      const merged = { ...defaultPCState, ...localData };
+      renderAdminGrid(Object.values(merged));
     }, 1000);
 
     // Kirim sinyal heartbeat ke server

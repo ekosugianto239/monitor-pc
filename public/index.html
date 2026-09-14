@@ -547,6 +547,13 @@
     const isWeekend = (today === 0 || today === 6);
     if (isWeekend) weekendNotice.style.display = 'flex';
 
+    // State Default ONI-01 s/d ONI-09 agar kartu PC LANGSUNG TAMPIL saat halaman dibuka
+    const defaultPCState = {};
+    for (let i = 1; i <= 9; i++) {
+      const pcId = `ONI-${i < 10 ? '0' + i : i}`;
+      defaultPCState[pcId] = { id: pcId, status: 'available', endTime: 0 };
+    }
+
     function formatCountdown(endTime) {
       if (!endTime) return '';
       const now = Math.floor(Date.now() / 1000);
@@ -605,10 +612,9 @@
         const targetNode = document.getElementById(`node-${pc.id}`);
         if (!targetNode) return;
 
-        let currentStatus = pc.status;
-        let endTime = pc.endTime;
+        let currentStatus = pc.status || 'available';
+        let endTime = pc.endTime || 0;
 
-        // Auto-expire jika durasi timer di masa lalu
         if (endTime && endTime <= now) {
           currentStatus = 'available';
           endTime = 0;
@@ -646,19 +652,17 @@
       });
     }
 
-    // Load data awal dari LocalStorage browser
+    // Render Instan Pertama: Gabungkan LocalStorage dengan Default PC Data
     const cachedData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
-    if (Object.keys(cachedData).length > 0) {
-      renderPCData(Object.values(cachedData), false);
-    }
+    const initialPCData = { ...defaultPCState, ...cachedData };
+    renderPCData(Object.values(initialPCData), false);
 
-    // Sync data realtime dari Socket.IO
+    // Sync Data Realtime dari Socket.IO Server
     socket.on('pcStatusUpdate', (payload) => {
       const pcData = payload.pcData || payload;
       const adminActive = payload.adminActive || false;
       const pcList = Array.isArray(pcData) ? pcData : Object.values(pcData);
 
-      // Simpan pembaruan status ke LocalStorage
       const storageObj = {};
       pcList.forEach(pc => storageObj[pc.id] = pc);
       localStorage.setItem('oni_pc_status', JSON.stringify(storageObj));
@@ -666,13 +670,11 @@
       renderPCData(pcList, adminActive);
     });
 
-    // Loop interval 1 detik untuk menghitung mundur timer secara independen
+    // Auto-refresh timer independen per 1 detik
     setInterval(() => {
       const localData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
-      const list = Object.values(localData);
-      if (list.length > 0) {
-        renderPCData(list);
-      }
+      const mergedData = { ...defaultPCState, ...localData };
+      renderPCData(Object.values(mergedData));
     }, 1000);
   </script>
 </body>
