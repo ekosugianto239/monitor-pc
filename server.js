@@ -111,10 +111,8 @@ io.on('connection', (socket) => {
   broadcastState();
 });
 
-if (process.env.NODE_ENV !== 'production') {
-  http.listen(PORT, () => {
-    console.log(`Server Dashboard berjalan di http://localhost:${PORT}`);
-  });
-}
+http.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server Dashboard berjalan di port ${PORT}`);
+});
 
 module.exports = app;
