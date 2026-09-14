@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ONI GAMING ZONE — Interactive Live Monitoring</title>
+  <title>ONI GAMING ZONE — Cyber Lounge Tangerang</title>
   
   <!-- Font & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,35 +13,37 @@
   
   <style>
     :root {
-      --bg-dark: #07080c;
-      --card-bg: #11131c;
+      --bg-dark: #070710;
+      --card-bg: #10121e;
       --accent-green: #00ff66;
       --accent-red: #ff2a5f;
-      --accent-gray: #4b5563;
-      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-purple: #8a2be2;
+      --accent-blue: #00d4ff;
+      --border-color: rgba(0, 212, 255, 0.15);
       --text-muted: #94a3b8;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg-dark); color: #f8fafc; line-height: 1.5; overflow-x: hidden; }
 
-    /* Header */
+    /* Header Cyber Ambient */
     header {
       position: relative;
-      background: linear-gradient(180deg, rgba(7, 8, 12, 0.8) 0%, var(--bg-dark) 100%), 
+      background: linear-gradient(180deg, rgba(138, 43, 226, 0.25) 0%, rgba(7, 7, 16, 0.95) 100%), 
                   url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200') center/cover no-repeat;
       text-align: center;
       padding: 50px 20px 30px;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 2px solid var(--accent-purple);
+      box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
     }
     
     .brand-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(0, 255, 102, 0.1);
-      color: var(--accent-green);
-      border: 1px solid rgba(0, 255, 102, 0.2);
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent-blue);
+      border: 1px solid rgba(0, 212, 255, 0.3);
       padding: 5px 14px;
       border-radius: 99px;
       font-size: 0.8rem;
@@ -64,10 +66,11 @@
     }
 
     header h1 {
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(2rem, 4vw, 3.2rem);
       font-weight: 800;
       color: #fff;
       text-transform: uppercase;
+      text-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
     }
 
     header h1 span { color: var(--accent-green); }
@@ -111,29 +114,29 @@
       gap: 8px;
     }
 
-    .section-title i { color: var(--accent-green); }
+    .section-title i { color: var(--accent-blue); }
 
-    /* ================= 3D ARENA STYLES (ENHANCED) ================= */
+    /* ================= REAL-LOCATION 3D ARENA STYLES ================= */
     .arena-3d-wrapper {
-      background: #0d0f17;
-      border: 1px solid rgba(0, 255, 102, 0.2);
+      background: radial-gradient(circle at top center, #18132e 0%, #080912 100%);
+      border: 2px solid rgba(138, 43, 226, 0.4);
       border-radius: 20px;
-      padding: 30px 15px;
+      padding: 35px 15px 25px;
       margin-bottom: 40px;
       position: relative;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 40px rgba(138, 43, 226, 0.25), inset 0 0 30px rgba(0, 0, 0, 0.8);
     }
 
     .arena-controls-hint {
       position: absolute;
       top: 15px;
       left: 15px;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--accent-blue);
       padding: 6px 12px;
       border-radius: 8px;
       font-size: 0.75rem;
-      color: var(--text-muted);
+      color: var(--accent-blue);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -141,7 +144,7 @@
     }
 
     .perspective-stage {
-      perspective: 800px;
+      perspective: 900px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -150,53 +153,65 @@
 
     .room-3d-grid {
       transform-style: preserve-3d;
-      transform: rotateX(25deg); /* Sudut miring lembut agar tulisan tetap jelas */
+      transform: rotateX(20deg);
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 35px;
       width: 100%;
-      max-width: 800px;
+      max-width: 850px;
     }
 
-    /* Desk Container 3D */
+    /* Double-Deck Desk Frame (Desain Meja Rangka Besi Bertingkat) */
     .desk-row-3d {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px dashed rgba(255, 255, 255, 0.1);
-      padding: 20px 15px 15px;
+      background: rgba(18, 20, 32, 0.8);
+      border: 2px solid #252a40;
+      padding: 24px 15px 18px;
       border-radius: 14px;
       position: relative;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9);
+    }
+
+    .desk-row-3d::before {
+      content: 'RAK ATAS: CPU RGB CASE';
+      position: absolute;
+      top: 6px;
+      right: 15px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.2);
+      letter-spacing: 1px;
     }
 
     .desk-label {
       position: absolute;
       top: -12px;
       left: 15px;
-      background: #07080c;
-      border: 1px solid var(--border-color);
-      padding: 2px 10px;
+      background: #8a2be2;
+      color: #fff;
+      padding: 2px 12px;
       border-radius: 6px;
       font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--text-muted);
+      font-weight: 800;
       letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.6);
     }
 
     .nodes-flex {
       display: flex;
-      gap: 15px;
+      gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
     }
 
-    /* 3D PC Node Unit (Card Timbul) */
+    /* 3D Double-Deck PC Card Unit */
     .pc-3d-node {
-      width: 120px;
-      min-height: 110px;
-      background: #141724;
-      border: 2px solid var(--border-color);
+      width: 125px;
+      min-height: 130px;
+      background: #121524;
+      border: 2px solid #2b304a;
       border-radius: 12px;
       transform-style: preserve-3d;
-      transition: all 0.25 ease;
+      transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -204,44 +219,68 @@
       padding: 10px 8px;
       cursor: pointer;
       position: relative;
-      box-shadow: 0 8px 0 #090a10, 0 12px 15px rgba(0,0,0,0.5); /* Efek tebal 3D di bawah */
+      box-shadow: 0 8px 0 #070810, 0 12px 18px rgba(0,0,0,0.7);
     }
 
     .pc-3d-node:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 0 #090a10, 0 16px 20px rgba(0,0,0,0.6);
+      transform: translateY(-5px);
+      box-shadow: 0 13px 0 #070810, 0 18px 25px rgba(0,0,0,0.8);
     }
 
-    .pc-3d-node:active {
-      transform: translateY(2px);
-      box-shadow: 0 4px 0 #090a10, 0 6px 10px rgba(0,0,0,0.4);
+    /* Upper CPU Rack Representation */
+    .cpu-shelf-visual {
+      width: 100%;
+      height: 22px;
+      background: #090a12;
+      border-bottom: 1px solid #22263d;
+      border-radius: 6px 6px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 6px;
     }
 
-    /* Status Lighting Effects 3D */
-    /* 1. TERPAKAI (Red Glow) */
+    .cpu-led-strip {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #333;
+    }
+
+    /* Status Lighting Effects 3D Realtime */
+    /* 1. TERPAKAI (Red Neon Glow) */
     .pc-3d-node.state-used {
-      border-color: rgba(255, 42, 95, 0.8) !important;
-      background: #24121a !important;
-      box-shadow: 0 8px 0 #12070d, 0 0 20px rgba(255, 42, 95, 0.4) !important;
+      border-color: rgba(255, 42, 95, 0.9) !important;
+      background: #28111c !important;
+      box-shadow: 0 8px 0 #14060d, 0 0 25px rgba(255, 42, 95, 0.5) !important;
+    }
+    .pc-3d-node.state-used .cpu-led-strip {
+      background: var(--accent-red);
+      box-shadow: 0 0 8px var(--accent-red);
     }
 
-    /* 2. TERSEDIA (Green Glow) */
+    /* 2. TERSEDIA (Green Neon Glow) */
     .pc-3d-node.state-available {
-      border-color: rgba(0, 255, 102, 0.6) !important;
-      background: #102419 !important;
-      box-shadow: 0 8px 0 #06140d, 0 0 15px rgba(0, 255, 102, 0.25) !important;
+      border-color: rgba(0, 255, 102, 0.7) !important;
+      background: #0d2618 !important;
+      box-shadow: 0 8px 0 #04120a, 0 0 20px rgba(0, 255, 102, 0.3) !important;
+    }
+    .pc-3d-node.state-available .cpu-led-strip {
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
     }
 
     /* 3. OFF (Dimmed Dark) */
     .pc-3d-node.state-off {
       border-color: rgba(255, 255, 255, 0.05) !important;
-      background: #0c0d12 !important;
+      background: #0b0c12 !important;
       opacity: 0.45;
-      box-shadow: 0 4px 0 #040508 !important;
+      box-shadow: 0 4px 0 #030406 !important;
     }
 
     .monitor-icon-3d {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-bottom: 2px;
     }
 
@@ -256,7 +295,7 @@
     }
 
     .node-status-text {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 700;
       text-transform: uppercase;
       padding: 3px 6px;
@@ -266,22 +305,32 @@
       margin-top: 4px;
     }
 
-    .pc-3d-node.state-used .node-status-text { background: rgba(255, 42, 95, 0.25); color: #ff88a5; }
-    .pc-3d-node.state-available .node-status-text { background: rgba(0, 255, 102, 0.25); color: #88ffbb; }
+    .pc-3d-node.state-used .node-status-text { background: rgba(255, 42, 95, 0.3); color: #ff88a5; }
+    .pc-3d-node.state-available .node-status-text { background: rgba(0, 255, 102, 0.3); color: #88ffbb; }
     .pc-3d-node.state-off .node-status-text { background: rgba(255, 255, 255, 0.1); color: #777; }
 
     /* Floating Timer Badge */
     .float-timer-3d {
       position: absolute;
-      top: -12px;
+      top: -14px;
       background: #ff2a5f;
       color: #fff;
       font-size: 0.65rem;
       font-weight: 800;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 6px;
-      box-shadow: 0 0 10px rgba(255, 42, 95, 0.6);
+      box-shadow: 0 0 10px rgba(255, 42, 95, 0.8);
       white-space: nowrap;
+      z-index: 5;
+    }
+
+    /* Headset Hanging Indicator Visual */
+    .headset-icon-hang {
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.3);
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
     }
 
     /* Info Grid */
@@ -309,7 +358,7 @@
       gap: 10px;
     }
 
-    .info-box h3 i { color: var(--accent-green); }
+    .info-box h3 i { color: var(--accent-blue); }
 
     .spec-list { list-style: none; }
     .spec-list li {
@@ -359,7 +408,7 @@
     footer {
       text-align: center;
       padding: 25px;
-      background: #050608;
+      background: #04050a;
       color: var(--text-muted);
       font-size: 0.85rem;
       border-top: 1px solid var(--border-color);
@@ -370,26 +419,26 @@
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(6px);
       z-index: 999;
       align-items: center;
       justify-content: center;
     }
 
     .modal-card {
-      background: #151824;
-      border: 1px solid var(--accent-green);
+      background: #141726;
+      border: 2px solid var(--accent-blue);
       border-radius: 16px;
       padding: 25px;
       width: 90%;
       max-width: 380px;
       text-align: center;
-      box-shadow: 0 0 30px rgba(0, 255, 102, 0.2);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.25);
     }
 
-    .modal-card h2 { color: #fff; margin-bottom: 10px; font-size: 1.4rem; }
-    .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+    .modal-card h2 { color: #fff; margin-bottom: 8px; font-size: 1.4rem; }
+    .modal-card p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px; }
     
     .btn-modal-wa {
       display: flex;
@@ -427,7 +476,7 @@
     </div>
 
     <h1>ONI GAMING <span>ZONE</span></h1>
-    <p>3D Live Monitoring & Reservation Hub</p>
+    <p>Realtime Interactive 3D Room Floor Plan</p>
   </header>
 
   <div class="container">
@@ -438,20 +487,20 @@
       <span><strong>PERHATIAN:</strong> Booking via WhatsApp TIDAK TERSEDIA pada hari Sabtu & Minggu (Khusus Walk-In / Datang Langsung).</span>
     </div>
 
-    <!-- 3D ARENA LIVE MONITORING -->
+    <!-- 3D ARENA LIVE MONITORING HASIL SESUAI FOTO WARNET -->
     <div class="section-header">
-      <div class="section-title"><i class="fas fa-cubes"></i> 3D DENAH LOKASI PC</div>
+      <div class="section-title"><i class="fas fa-cubes"></i> DENAH ARENA REALTIME (DOUBLE-DECK DESK)</div>
     </div>
 
     <div class="arena-3d-wrapper">
       <div class="arena-controls-hint">
-        <i class="fas fa-hand-pointer"></i> Klik PC untuk booking
+        <i class="fas fa-headphones"></i> Klik PC 3D untuk melihat info & booking
       </div>
 
       <div class="perspective-stage">
         <div class="room-3d-grid">
           
-          <!-- BARIS DEPAN: ONI-01 s/d ONI-03 -->
+          <!-- MEJA DEPAN: ONI-01 s/d ONI-03 (Single Row Menghadap Depan) -->
           <div class="desk-row-3d">
             <span class="desk-label"><i class="fas fa-desktop"></i> MEJA BARIS DEPAN (ONI 01 - 03)</span>
             <div class="nodes-flex">
@@ -461,14 +510,16 @@
             </div>
           </div>
 
-          <!-- BARIS ISLAND BERHADAPAN: ONI-04 s/d ONI-09 -->
+          <!-- MEJA ISLAND DOUBLE-DECK BERHADAPAN: ONI-04 s/d ONI-09 -->
           <div class="desk-row-3d">
-            <span class="desk-label"><i class="fas fa-users"></i> MEJA ISLAND BERHADAPAN (ONI 04 - 09)</span>
-            <div class="nodes-flex" style="margin-bottom: 15px;">
+            <span class="desk-label"><i class="fas fa-users"></i> MEJA BERHADAPAN (ONI 04 - 09)</span>
+            <!-- Baris Kiri / Atas -->
+            <div class="nodes-flex" style="margin-bottom: 18px;">
               <div id="node-ONI-04"></div>
               <div id="node-ONI-05"></div>
               <div id="node-ONI-06"></div>
             </div>
+            <!-- Baris Kanan / Bawah -->
             <div class="nodes-flex">
               <div id="node-ONI-07"></div>
               <div id="node-ONI-08"></div>
@@ -480,7 +531,7 @@
       </div>
     </div>
 
-    <!-- Spesifikasi & Harga -->
+    <!-- Spesifikasi & Biaya -->
     <div class="info-grid">
       <div class="info-box">
         <h3><i class="fas fa-microchip"></i> SPESIFIKASI PC GAMING</h3>
@@ -489,7 +540,7 @@
           <li><strong>Processor</strong> <span>Intel Core i5 Gen 9th</span></li>
           <li><strong>Memory RAM</strong> <span>16GB DDR4 Dual Channel</span></li>
           <li><strong>Display Monitor</strong> <span>Gaming 200Hz High Refresh Rate</span></li>
-          <li><strong>Peripherals</strong> <span>Mechanical Keyboards 65% + Mouse</span></li>
+          <li><strong>Peripherals</strong> <span>Mechanical Keyboards + Gaming Mouse</span></li>
         </ul>
       </div>
 
@@ -621,11 +672,16 @@
         targetNode.innerHTML = `
           <div class="pc-3d-node ${stateClass}" onclick="openModal('${pc.id}', '${pc.status}')">
             ${floatTimerHTML}
+            <div class="cpu-shelf-visual">
+              <span class="cpu-led-strip"></span>
+              <span class="cpu-led-strip"></span>
+            </div>
             <div class="monitor-icon-3d">
               <i class="fas fa-desktop"></i>
             </div>
             <span class="pc-number-3d">${pc.id}</span>
             <span class="node-status-text">${statusText}</span>
+            <i class="fas fa-headphones headset-icon-hang"></i>
           </div>
         `;
       });
