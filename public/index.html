@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ONI GAMING ZONE — Ultimate Gaming Hub Tangerang</title>
+  <title>ONI GAMING ZONE — 3D Interactive Live Monitoring</title>
   
   <!-- Font & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,8 +13,8 @@
   
   <style>
     :root {
-      --bg-dark: #0a0b0e;
-      --card-bg: #12141c;
+      --bg-dark: #07080c;
+      --card-bg: #11131c;
       --accent-green: #00ff66;
       --accent-red: #ff2a5f;
       --accent-gray: #4b5563;
@@ -28,10 +28,10 @@
     /* Header & Hero */
     header {
       position: relative;
-      background: linear-gradient(180deg, rgba(10, 11, 14, 0.7) 0%, var(--bg-dark) 100%), 
+      background: linear-gradient(180deg, rgba(7, 8, 12, 0.8) 0%, var(--bg-dark) 100%), 
                   url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200') center/cover no-repeat;
       text-align: center;
-      padding: 60px 20px 40px;
+      padding: 50px 20px 30px;
       border-bottom: 1px solid var(--border-color);
     }
     
@@ -42,12 +42,12 @@
       background: rgba(0, 255, 102, 0.1);
       color: var(--accent-green);
       border: 1px solid rgba(0, 255, 102, 0.2);
-      padding: 6px 16px;
+      padding: 5px 14px;
       border-radius: 99px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       letter-spacing: 1px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
     .admin-badge-container {
@@ -56,43 +56,40 @@
       gap: 8px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border-color);
-      padding: 6px 16px;
+      padding: 5px 14px;
       border-radius: 99px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       margin-left: 8px;
-      transition: all 0.3s ease;
     }
 
     header h1 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 800;
       color: #fff;
-      letter-spacing: -1px;
       text-transform: uppercase;
-      margin-top: 10px;
     }
 
     header h1 span { color: var(--accent-green); }
-    header p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 10px auto 0; }
+    header p { color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 5px auto 0; }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 25px 15px; }
 
-    /* Perhatian Weekend Notice Banner */
+    /* Weekend Warning Banner */
     .weekend-notice {
       display: none;
       background: rgba(255, 170, 0, 0.1);
       border: 1px solid rgba(255, 170, 0, 0.3);
       color: #ffaa00;
-      padding: 12px 20px;
+      padding: 10px 16px;
       border-radius: 10px;
-      margin-bottom: 25px;
-      font-size: 0.88rem;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
       font-weight: 600;
       text-align: center;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     /* Section Headings */
@@ -102,142 +99,195 @@
       justify-content: space-between;
       margin-bottom: 15px;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
+      padding-bottom: 10px;
     }
 
     .section-title {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .section-title i { color: var(--accent-green); }
 
-    /* Single Container Wrapper untuk 9 PC Grid */
-    .pc-monitoring-wrapper {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 16px;
+    /* ================= 3D ISOMETRIC ARENA STYLES ================= */
+    .arena-3d-wrapper {
+      background: radial-gradient(circle at center, #181b28 0%, #0d0e15 100%);
+      border: 1px solid rgba(0, 255, 102, 0.15);
+      border-radius: 20px;
+      padding: 30px 15px 50px;
       margin-bottom: 40px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .pc-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
-    }
-
-    /* Standard Card Visual Status */
-    .pc-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 12px 10px;
-      text-align: center;
+      overflow: hidden;
       position: relative;
-      transition: all 0.3s ease;
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
-    /* 1. STATE: TERPAKAI (Menyala Terang Neon Red) */
-    .pc-card.state-used {
-      background: rgba(255, 42, 95, 0.08) !important;
-      border: 1px solid rgba(255, 42, 95, 0.6) !important;
-      box-shadow: 0 0 15px rgba(255, 42, 95, 0.3), inset 0 0 10px rgba(255, 42, 95, 0.1) !important;
-      transform: scale(1.02);
-    }
-
-    /* 2. STATE: STANDBY / TERSEDIA (Normal Mild Green) */
-    .pc-card.state-available {
-      background: rgba(0, 255, 102, 0.03);
-      border: 1px solid rgba(0, 255, 102, 0.2);
-    }
-
-    /* 3. STATE: OFF / MATI (Redup / Dimmed) */
-    .pc-card.state-off {
-      background: rgba(0, 0, 0, 0.4) !important;
-      border: 1px solid rgba(255, 255, 255, 0.03) !important;
-      opacity: 0.45;
-      filter: grayscale(80%);
-    }
-
-    .pc-card.admin-active {
-      border-color: rgba(0, 255, 102, 0.5) !important;
-    }
-
-    .pc-header-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 4px;
-    }
-
-    .pc-icon { font-size: 0.9rem; color: var(--text-muted); }
-    .pc-title { font-size: 1.05rem; font-weight: 800; color: #fff; }
-    .pc-specs { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
-
-    /* Badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 0.72rem;
-      margin-bottom: 8px;
-      width: 100%;
-    }
-
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-
-    .badge-available { background: rgba(0, 255, 102, 0.1); color: var(--accent-green); border: 1px solid rgba(0, 255, 102, 0.3); }
-    .badge-available .status-dot { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); animation: pulse 2s infinite; }
-
-    .badge-used { background: rgba(255, 42, 95, 0.2); color: #ff6688; border: 1px solid rgba(255, 42, 95, 0.5); }
-    .badge-used .status-dot { background: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); animation: pulse-red 1.5s infinite; }
-
-    .badge-off { background: rgba(148, 163, 184, 0.08); color: var(--accent-gray); border: 1px solid rgba(148, 163, 184, 0.2); }
-    .badge-off .status-dot { background: var(--accent-gray); }
-
-    @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(0, 255, 102, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 102, 0); }
-    }
-
-    @keyframes pulse-red {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 42, 95, 0.8); }
-      70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(255, 42, 95, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 42, 95, 0); }
-    }
-
-    .btn-wa {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: #10b981;
-      color: #fff;
-      text-decoration: none;
-      padding: 6px 8px;
-      border-radius: 6px;
-      font-weight: 700;
+    .arena-controls-hint {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 8px;
       font-size: 0.75rem;
-      transition: background 0.2s;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
     }
 
-    .btn-wa:hover { background: #059669; }
-    .btn-wa.disabled {
-      background: #374151;
-      color: #9ca3af;
-      cursor: not-allowed;
+    .perspective-stage {
+      perspective: 1000px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 480px;
+    }
+
+    .room-3d-grid {
+      transform-style: preserve-3d;
+      transform: rotateX(55deg) rotateZ(-30deg);
+      transition: transform 0.5s ease-out;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      padding: 20px;
+    }
+
+    /* Meja Row Structure */
+    .desk-row-3d {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .desk-label {
+      position: absolute;
+      top: -12px;
+      left: 15px;
+      background: #000;
+      border: 1px solid var(--border-color);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      transform: rotateX(-55deg);
+    }
+
+    /* 3D PC Node Unit */
+    .pc-3d-node {
+      width: 110px;
+      height: 120px;
+      background: rgba(18, 20, 28, 0.9);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      transform-style: preserve-3d;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 6px;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+
+    .pc-3d-node:hover {
+      transform: translateZ(15px) scale(1.05);
+    }
+
+    /* Status Lighting Effects 3D */
+    /* 1. TERPAKAI (Red Glow) */
+    .pc-3d-node.state-used {
+      border-color: rgba(255, 42, 95, 0.8) !important;
+      background: linear-gradient(135deg, rgba(255, 42, 95, 0.25) 0%, rgba(18, 20, 28, 0.95) 100%) !important;
+      box-shadow: 0 0 25px rgba(255, 42, 95, 0.4), inset 0 0 15px rgba(255, 42, 95, 0.2) !important;
+    }
+
+    /* 2. TERSEDIA (Green Glow) */
+    .pc-3d-node.state-available {
+      border-color: rgba(0, 255, 102, 0.5) !important;
+      background: linear-gradient(135deg, rgba(0, 255, 102, 0.15) 0%, rgba(18, 20, 28, 0.95) 100%) !important;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.2) !important;
+    }
+
+    /* 3. OFF (Dimmed Dark) */
+    .pc-3d-node.state-off {
+      border-color: rgba(255, 255, 255, 0.05) !important;
+      background: rgba(5, 6, 8, 0.8) !important;
+      opacity: 0.4;
+      box-shadow: none !important;
+    }
+
+    /* 3D Monitor Icon & Details */
+    .monitor-screen-3d {
+      width: 45px;
+      height: 32px;
+      background: #000;
+      border: 2px solid #333;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-top: 4px;
+    }
+
+    .pc-3d-node.state-used .monitor-screen-3d {
+      border-color: var(--accent-red);
+      background: rgba(255, 42, 95, 0.2);
+    }
+
+    .pc-3d-node.state-available .monitor-screen-3d {
+      border-color: var(--accent-green);
+      background: rgba(0, 255, 102, 0.2);
+    }
+
+    .pc-number-3d {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .node-status-text {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .pc-3d-node.state-used .node-status-text { background: rgba(255, 42, 95, 0.3); color: #ff88a5; }
+    .pc-3d-node.state-available .node-status-text { background: rgba(0, 255, 102, 0.3); color: #88ffbb; }
+    .pc-3d-node.state-off .node-status-text { background: rgba(255, 255, 255, 0.1); color: #666; }
+
+    /* Floating Timer Badge diatas PC 3D */
+    .float-timer-3d {
+      position: absolute;
+      top: -22px;
+      background: #000;
+      border: 1px solid var(--accent-red);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(255, 42, 95, 0.5);
+      white-space: nowrap;
     }
 
     /* Info Grid */
@@ -252,7 +302,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 14px;
-      padding: 24px;
+      padding: 22px;
     }
 
     .info-box h3 {
@@ -282,7 +332,7 @@
     .spec-list li span { color: var(--text-muted); font-weight: 600; }
     .price-badge { background: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 6px; color: var(--accent-green) !important; font-weight: 700 !important; }
 
-    /* Gallery & Maps */
+    /* Map & Gallery */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -302,10 +352,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
     }
-
-    .gallery-item:hover img { transform: scale(1.05); }
 
     .map-container {
       width: 100%;
@@ -318,10 +365,60 @@
     footer {
       text-align: center;
       padding: 25px;
-      background: #060709;
+      background: #050608;
       color: var(--text-muted);
       font-size: 0.85rem;
       border-top: 1px solid var(--border-color);
+    }
+
+    /* Modal Booking Popup */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-card {
+      background: #151824;
+      border: 1px solid var(--accent-green);
+      border-radius: 16px;
+      padding: 25px;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0, 255, 102, 0.2);
+    }
+
+    .modal-card h2 { color: #fff; margin-bottom: 10px; font-size: 1.4rem; }
+    .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+    
+    .btn-modal-wa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #10b981;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .btn-modal-close {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px;
+      border-radius: 8px;
+      width: 100%;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -330,34 +427,69 @@
   <header>
     <div class="brand-tag"><i class="fas fa-bolt"></i> CYBER CAFE IN TANGERANG</div>
     
-    <!-- Status Indikator Kasir / Operator -->
+    <!-- Status Operator Indikator -->
     <div class="admin-badge-container" id="adminBadge">
-      <span class="status-dot" id="adminDot" style="background: #64748b;"></span>
+      <span class="status-dot" id="adminDot" style="background: #64748b; width:7px; height:7px; border-radius:50%; display:inline-block;"></span>
       <span id="adminText" style="color: #94a3b8;">OPERATOR OFFLINE</span>
     </div>
 
     <h1>ONI GAMING <span>ZONE</span></h1>
-    <p>Pengalaman Gaming & Tempat Nongkrong Nyaman di Tangerang</p>
+    <p>3D Interactive Live Monitoring & Reservation Hub</p>
   </header>
 
   <div class="container">
 
-    <!-- Notifikasi Khusus Sabtu & Minggu -->
+    <!-- Warning Sabtu & Minggu -->
     <div class="weekend-notice" id="weekendNotice">
       <i class="fas fa-exclamation-triangle"></i>
       <span><strong>PERHATIAN:</strong> Booking via WhatsApp TIDAK TERSEDIA pada hari Sabtu & Minggu (Khusus Walk-In / Datang Langsung).</span>
     </div>
-    
-    <!-- Status Ketersediaan PC dalam 1 Container Utama -->
+
+    <!-- 3D ISOMETRIC ARENA LIVE MONITORING -->
     <div class="section-header">
-      <div class="section-title"><i class="fas fa-desktop"></i> LIVE MONITORING CLIENT</div>
-    </div>
-    
-    <div class="pc-monitoring-wrapper">
-      <div class="pc-grid" id="pcGrid"></div>
+      <div class="section-title"><i class="fas fa-cubes"></i> 3D ARENA LAYOUT MONITORING</div>
     </div>
 
-    <!-- Informasi Spesifikasi PC & Pricelist -->
+    <div class="arena-3d-wrapper">
+      <div class="arena-controls-hint">
+        <i class="fas fa-hand-pointer"></i> Klik PC 3D untuk melihat info & booking
+      </div>
+
+      <div class="perspective-stage">
+        <div class="room-3d-grid" id="room3d">
+          
+          <!-- BARIS DEPAN: ONI-01 s/d ONI-03 (Menghadap Depan) -->
+          <div class="desk-row-3d">
+            <span class="desk-label"><i class="fas fa-arrow-up"></i> MEJA BARIS DEPAN (ONI 01 - 03)</span>
+            <div id="node-ONI-01"></div>
+            <div id="node-ONI-02"></div>
+            <div id="node-ONI-03"></div>
+          </div>
+
+          <!-- BARIS ISLAND BERHADAPAN: ONI-04 s/d ONI-09 -->
+          <div class="desk-row-3d" style="flex-direction: column; gap: 20px; border-color: rgba(0, 255, 102, 0.2);">
+            <span class="desk-label"><i class="fas fa-users"></i> MEJA ISLAND BERHADAPAN (ONI 04 - 09)</span>
+            
+            <!-- Sisi Atas: ONI-04 s/d ONI-06 -->
+            <div style="display: flex; gap: 15px; justify-content: center;">
+              <div id="node-ONI-04"></div>
+              <div id="node-ONI-05"></div>
+              <div id="node-ONI-06"></div>
+            </div>
+
+            <!-- Sisi Bawah: ONI-07 s/d ONI-09 -->
+            <div style="display: flex; gap: 15px; justify-content: center;">
+              <div id="node-ONI-07"></div>
+              <div id="node-ONI-08"></div>
+              <div id="node-ONI-09"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Spesifikasi & Harga -->
     <div class="info-grid">
       <div class="info-box">
         <h3><i class="fas fa-microchip"></i> SPESIFIKASI PC GAMING</h3>
@@ -378,148 +510,133 @@
           <li><strong>Paket 5 Jam</strong> <span class="price-badge">Rp 30.000</span></li>
           <li><strong>Paket Pagi (07:00 - 12:00)</strong> <span class="price-badge">Rp 25.000</span></li>
           <li><strong>Paket Malam (21:00 - 06:00)</strong> <span class="price-badge">Rp 35.000</span></li>
-          <li><strong>Network Internet</strong> <span> High-Speed Fiber</span></li>
         </ul>
       </div>
     </div>
 
-    <!-- Galeri Suasana -->
-    <div class="section-header">
-      <div class="section-title"><i class="fas fa-camera"></i> SUASANA WARNET</div>
-    </div>
-    <div class="gallery-grid">
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600" alt="PC Gaming"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=600" alt="Mechanical Keyboard"></div>
-    </div>
-
-    <!-- Lokasi Maps ONI GAMING ZONE -->
+    <!-- Map & Galeri -->
     <div class="section-header">
       <div class="section-title"><i class="fas fa-map-marker-alt"></i> LOKASI ARENA</div>
     </div>
     <div class="map-container">
       <iframe 
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.388837330206!2d106.6055042!3d-6.208408!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ff704c4296dd%3A0x8c7ccb016ee7ddf5!2sWARNET%20%26%20PS%20ONI%20GAMING%20ZONE!5e0!3m2!1sid!2sid!4v1726000000000!5m2!1sid!2sid" 
-        width="100%" 
-        height="100%" 
-        style="border:0;" 
-        allowfullscreen="" 
-        loading="lazy" 
-        referrerpolicy="no-referrer-when-downgrade">
+        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
       </iframe>
     </div>
 
+  </div>
+
+  <!-- Modal Booking 3D -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-card">
+      <h2 id="modalPcTitle">ONI-01</h2>
+      <p id="modalPcStatus">Status: TERSEDIA</p>
+      <a href="#" id="modalWaBtn" class="btn-modal-wa" target="_blank"><i class="fab fa-whatsapp"></i> Booking via WhatsApp</a>
+      <button class="btn-modal-close" onclick="closeModal()">Tutup</button>
+    </div>
   </div>
 
   <footer>
     <p>&copy; BIMA TECH INDONESIA. All Rights Reserved.</p>
   </footer>
 
-  <!-- Script Realtime Socket.IO Sync -->
+  <!-- Realtime Socket Sync -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    const pcGrid = document.getElementById('pcGrid');
     const adminDot = document.getElementById('adminDot');
     const adminText = document.getElementById('adminText');
     const adminBadge = document.getElementById('adminBadge');
     const weekendNotice = document.getElementById('weekendNotice');
-
-    // Pengecekan Hari Sabtu (6) atau Minggu (0)
+    
+    // Check Hari Weekend
     const today = new Date().getDay();
     const isWeekend = (today === 0 || today === 6);
-
-    if (isWeekend) {
-      weekendNotice.style.display = 'flex';
-    }
+    if (isWeekend) weekendNotice.style.display = 'flex';
 
     function formatCountdown(endTime) {
       if (!endTime) return '';
       const now = Math.floor(Date.now() / 1000);
       const sisaDetik = endTime - now;
       if (sisaDetik <= 0) return '';
-
       const jam = Math.floor(sisaDetik / 3600);
       const menit = Math.floor((sisaDetik % 3600) / 60);
       const detik = sisaDetik % 60;
-
-      const jStr = jam < 10 ? '0' + jam : jam;
-      const mStr = menit < 10 ? '0' + menit : menit;
-      const dStr = detik < 10 ? '0' + detik : detik;
-
-      return `${jStr}:${mStr}:${dStr}`;
+      return `${jam < 10 ? '0'+jam : jam}:${menit < 10 ? '0'+menit : menit}:${detik < 10 ? '0'+detik : detik}`;
     }
 
-    function handleBookingClick(e, pcId) {
+    function openModal(pcId, pcStatus) {
+      const modal = document.getElementById('bookingModal');
+      const title = document.getElementById('modalPcTitle');
+      const status = document.getElementById('modalPcStatus');
+      const waBtn = document.getElementById('modalWaBtn');
+
+      title.innerText = pcId;
+      status.innerText = `Status PC: ${pcStatus.toUpperCase()}`;
+
       if (isWeekend) {
-        e.preventDefault();
-        alert(`Mohon maaf! Khusus hari Sabtu & Minggu, booking via WhatsApp untuk ${pcId} TIDAK TERSEDIA. Silakan langsung datang (Walk-In) ke lokasi ONI GAMING ZONE.`);
+        waBtn.style.background = '#374151';
+        waBtn.innerText = 'No Booking Weekend (Datang Langsung)';
+        waBtn.href = '#';
+        waBtn.onclick = (e) => { e.preventDefault(); alert('Khusus Sabtu & Minggu booking via WA non-aktif. Silakan Walk-In ke lokasi.'); };
+      } else {
+        waBtn.style.background = '#10b981';
+        waBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Booking via WhatsApp';
+        waBtn.onclick = null;
+        waBtn.href = `https://wa.me/6285212079989?text=Halo%20Admin%20ONI%20GAMING%20ZONE,%20saya%20mau%20booking%20PC%20${pcId}`;
       }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('bookingModal').style.display = 'none';
     }
 
     socket.on('pcStatusUpdate', (payload) => {
       const pcData = payload.pcData || payload;
       const adminActive = payload.adminActive || false;
 
-      // Update Tampilan Status Admin di Header
+      // Operator Indicator
       if (adminActive) {
         adminDot.style.background = '#00ff66';
-        adminDot.style.boxShadow = '0 0 8px #00ff66';
-        adminText.innerText = 'OPERATOR STANDBY (ONLINE)';
+        adminText.innerText = 'OPERATOR ONLINE';
         adminText.style.color = '#00ff66';
-        adminBadge.style.borderColor = 'rgba(0, 255, 102, 0.4)';
-        adminBadge.style.background = 'rgba(0, 255, 102, 0.08)';
       } else {
         adminDot.style.background = '#64748b';
-        adminDot.style.boxShadow = 'none';
         adminText.innerText = 'OPERATOR OFFLINE';
         adminText.style.color = '#94a3b8';
-        adminBadge.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-        adminBadge.style.background = 'rgba(255, 255, 255, 0.05)';
       }
 
-      pcGrid.innerHTML = '';
       const pcList = Array.isArray(pcData) ? pcData : Object.values(pcData);
 
       pcList.forEach((pc) => {
-        const countdownText = formatCountdown(pc.endTime);
-        
-        let badgeClass = 'badge-available';
-        let statusText = 'TERSEDIA';
-        let cardStateClass = 'state-available';
+        const targetNode = document.getElementById(`node-${pc.id}`);
+        if (!targetNode) return;
+
+        const countdown = formatCountdown(pc.endTime);
+        let stateClass = 'state-available';
+        let statusText = 'READY';
 
         if (pc.status === 'off') {
-          badgeClass = 'badge-off';
-          statusText = 'OFF / MATI';
-          cardStateClass = 'state-off';
+          stateClass = 'state-off';
+          statusText = 'OFF';
         } else if (pc.status === 'used') {
-          badgeClass = 'badge-used';
-          statusText = countdownText ? `TERPAKAI (${countdownText})` : 'TERPAKAI';
-          cardStateClass = 'state-used';
+          stateClass = 'state-used';
+          statusText = countdown ? countdown : 'USED';
         }
 
-        const activeCardClass = adminActive ? `pc-card ${cardStateClass} admin-active` : `pc-card ${cardStateClass}`;
+        const floatTimerHTML = (pc.status === 'used' && countdown) ? `<div class="float-timer-3d">${countdown}</div>` : '';
 
-        // Tombol WA berubah warna & non-aktif jika Weekend
-        const btnClass = isWeekend ? 'btn-wa disabled' : 'btn-wa';
-        const btnText = isWeekend ? '<i class="fas fa-ban"></i> No Booking Weekend' : '<i class="fab fa-whatsapp"></i> Booking';
-
-        pcGrid.innerHTML += `
-          <div class="${activeCardClass}">
-            <div class="pc-header-row">
-              <span class="pc-icon"><i class="fas fa-gamepad"></i></span>
-              <span class="pc-title">${pc.id}</span>
+        targetNode.innerHTML = `
+          <div class="pc-3d-node ${stateClass}" onclick="openModal('${pc.id}', '${pc.status}')">
+            ${floatTimerHTML}
+            <div class="monitor-screen-3d">
+              <i class="fas fa-desktop" style="font-size:0.75rem;"></i>
             </div>
-            <div class="pc-specs">${pc.vga || 'RTX 2060'}</div>
-            <div class="badge ${badgeClass}">
-              <span class="status-dot"></span>
-              ${statusText}
-            </div>
-            <a href="https://wa.me/6285212079989?text=Halo%20Admin%20ONI%20GAMING%20ZONE,%20saya%20mau%20booking%20PC%20${pc.id}" 
-               class="${btnClass}" 
-               onclick="handleBookingClick(event, '${pc.id}')"
-               target="_blank">
-              ${btnText}
-            </a>
+            <span class="pc-number-3d">${pc.id}</span>
+            <span class="node-status-text">${statusText}</span>
           </div>
         `;
       });
