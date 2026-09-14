@@ -78,6 +78,23 @@
 
     .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
 
+    /* Perhatian Weekend Notice Banner */
+    .weekend-notice {
+      display: none;
+      background: rgba(255, 170, 0, 0.1);
+      border: 1px solid rgba(255, 170, 0, 0.3);
+      color: #ffaa00;
+      padding: 12px 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
     /* Section Headings */
     .section-header {
       display: flex;
@@ -115,6 +132,7 @@
       gap: 12px;
     }
 
+    /* Standard Card Visual Status */
     .pc-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border-color);
@@ -122,17 +140,33 @@
       padding: 12px 10px;
       text-align: center;
       position: relative;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
     }
 
-    .pc-card:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.04);
+    /* 1. STATE: TERPAKAI (Menyala Terang Neon Red) */
+    .pc-card.state-used {
+      background: rgba(255, 42, 95, 0.08) !important;
+      border: 1px solid rgba(255, 42, 95, 0.6) !important;
+      box-shadow: 0 0 15px rgba(255, 42, 95, 0.3), inset 0 0 10px rgba(255, 42, 95, 0.1) !important;
+      transform: scale(1.02);
+    }
+
+    /* 2. STATE: STANDBY / TERSEDIA (Normal Mild Green) */
+    .pc-card.state-available {
+      background: rgba(0, 255, 102, 0.03);
+      border: 1px solid rgba(0, 255, 102, 0.2);
+    }
+
+    /* 3. STATE: OFF / MATI (Redup / Dimmed) */
+    .pc-card.state-off {
+      background: rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(255, 255, 255, 0.03) !important;
+      opacity: 0.45;
+      filter: grayscale(80%);
     }
 
     .pc-card.admin-active {
-      border-color: rgba(0, 255, 102, 0.4) !important;
-      box-shadow: 0 0 10px rgba(0, 255, 102, 0.1) !important;
+      border-color: rgba(0, 255, 102, 0.5) !important;
     }
 
     .pc-header-row {
@@ -143,15 +177,11 @@
       margin-bottom: 4px;
     }
 
-    .pc-icon {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
+    .pc-icon { font-size: 0.9rem; color: var(--text-muted); }
     .pc-title { font-size: 1.05rem; font-weight: 800; color: #fff; }
     .pc-specs { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
 
-    /* Compact Badges */
+    /* Badges */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -167,11 +197,11 @@
 
     .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
 
-    .badge-available { background: rgba(0, 255, 102, 0.08); color: var(--accent-green); border: 1px solid rgba(0, 255, 102, 0.2); }
+    .badge-available { background: rgba(0, 255, 102, 0.1); color: var(--accent-green); border: 1px solid rgba(0, 255, 102, 0.3); }
     .badge-available .status-dot { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); animation: pulse 2s infinite; }
 
-    .badge-used { background: rgba(255, 42, 95, 0.08); color: var(--accent-red); border: 1px solid rgba(255, 42, 95, 0.2); }
-    .badge-used .status-dot { background: var(--accent-red); }
+    .badge-used { background: rgba(255, 42, 95, 0.2); color: #ff6688; border: 1px solid rgba(255, 42, 95, 0.5); }
+    .badge-used .status-dot { background: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); animation: pulse-red 1.5s infinite; }
 
     .badge-off { background: rgba(148, 163, 184, 0.08); color: var(--accent-gray); border: 1px solid rgba(148, 163, 184, 0.2); }
     .badge-off .status-dot { background: var(--accent-gray); }
@@ -180,6 +210,12 @@
       0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.7); }
       70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(0, 255, 102, 0); }
       100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 102, 0); }
+    }
+
+    @keyframes pulse-red {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 42, 95, 0.8); }
+      70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(255, 42, 95, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 42, 95, 0); }
     }
 
     .btn-wa {
@@ -198,6 +234,11 @@
     }
 
     .btn-wa:hover { background: #059669; }
+    .btn-wa.disabled {
+      background: #374151;
+      color: #9ca3af;
+      cursor: not-allowed;
+    }
 
     /* Info Grid */
     .info-grid {
@@ -300,6 +341,12 @@
   </header>
 
   <div class="container">
+
+    <!-- Notifikasi Khusus Sabtu & Minggu -->
+    <div class="weekend-notice" id="weekendNotice">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span><strong>PERHATIAN:</strong> Booking via WhatsApp TIDAK TERSEDIA pada hari Sabtu & Minggu (Khusus Walk-In / Datang Langsung).</span>
+    </div>
     
     <!-- Status Ketersediaan PC dalam 1 Container Utama -->
     <div class="section-header">
@@ -375,6 +422,15 @@
     const adminDot = document.getElementById('adminDot');
     const adminText = document.getElementById('adminText');
     const adminBadge = document.getElementById('adminBadge');
+    const weekendNotice = document.getElementById('weekendNotice');
+
+    // Pengecekan Hari Sabtu (6) atau Minggu (0)
+    const today = new Date().getDay();
+    const isWeekend = (today === 0 || today === 6);
+
+    if (isWeekend) {
+      weekendNotice.style.display = 'flex';
+    }
 
     function formatCountdown(endTime) {
       if (!endTime) return '';
@@ -391,6 +447,13 @@
       const dStr = detik < 10 ? '0' + detik : detik;
 
       return `${jStr}:${mStr}:${dStr}`;
+    }
+
+    function handleBookingClick(e, pcId) {
+      if (isWeekend) {
+        e.preventDefault();
+        alert(`Mohon maaf! Khusus hari Sabtu & Minggu, booking via WhatsApp untuk ${pcId} TIDAK TERSEDIA. Silakan langsung datang (Walk-In) ke lokasi ONI GAMING ZONE.`);
+      }
     }
 
     socket.on('pcStatusUpdate', (payload) => {
@@ -422,16 +485,23 @@
         
         let badgeClass = 'badge-available';
         let statusText = 'TERSEDIA';
+        let cardStateClass = 'state-available';
 
         if (pc.status === 'off') {
           badgeClass = 'badge-off';
           statusText = 'OFF / MATI';
+          cardStateClass = 'state-off';
         } else if (pc.status === 'used') {
           badgeClass = 'badge-used';
           statusText = countdownText ? `TERPAKAI (${countdownText})` : 'TERPAKAI';
+          cardStateClass = 'state-used';
         }
 
-        const activeCardClass = adminActive ? 'pc-card admin-active' : 'pc-card';
+        const activeCardClass = adminActive ? `pc-card ${cardStateClass} admin-active` : `pc-card ${cardStateClass}`;
+
+        // Tombol WA berubah warna & non-aktif jika Weekend
+        const btnClass = isWeekend ? 'btn-wa disabled' : 'btn-wa';
+        const btnText = isWeekend ? '<i class="fas fa-ban"></i> No Booking Weekend' : '<i class="fab fa-whatsapp"></i> Booking';
 
         pcGrid.innerHTML += `
           <div class="${activeCardClass}">
@@ -444,8 +514,11 @@
               <span class="status-dot"></span>
               ${statusText}
             </div>
-            <a href="https://wa.me/6285212079989?text=Halo%20Admin%20ONI%20GAMING%20ZONE,%20saya%20mau%20booking%20PC%20${pc.id}" class="btn-wa" target="_blank">
-              <i class="fab fa-whatsapp"></i> Booking
+            <a href="https://wa.me/6285212079989?text=Halo%20Admin%20ONI%20GAMING%20ZONE,%20saya%20mau%20booking%20PC%20${pc.id}" 
+               class="${btnClass}" 
+               onclick="handleBookingClick(event, '${pc.id}')"
+               target="_blank">
+              ${btnText}
             </a>
           </div>
         `;
