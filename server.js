@@ -148,8 +148,9 @@ app.post('/api/update-manual', (req, res) => {
         }
       }
       pc.status = 'used';
+      // MANTAP: Data bookedBy, paymentStatus, dan scheduledStartTime TETAP DIPERTAHANKAN
     } else {
-      // Reset ke TERSEDIA atau OFF
+      // Hanya hapus data booking jika tombol RESET / OFF secara eksplisit diklik kasir
       pc.status = status;
       pc.endTime = null;
       pc.bookedBy = '';
@@ -176,15 +177,18 @@ setInterval(() => {
       pc.status = 'used';
       const durationHours = pc.scheduledDuration || 5;
       pc.endTime = nowSec + (durationHours * 3600);
-      pc.scheduledStartTime = 0; // Hapus jadwal agar tidak terpicu ulang
     }
 
     // 2. AUTO RESET: Jika countdown waktu pemakaian telah selesai
     if (pc.status === 'used' && pc.endTime && nowSec >= pc.endTime) {
       pc.status = 'available';
       pc.endTime = null;
-      pc.bookedBy = '';
-      pc.paymentStatus = '';
+      // Otomatis bersihkan booking jika jadwal jam mainnya sudah berakhir
+      if (!pc.scheduledStartTime || nowMs >= (pc.scheduledStartTime + ((pc.scheduledDuration || 5) * 3600000))) {
+        pc.bookedBy = '';
+        pc.paymentStatus = '';
+        pc.scheduledStartTime = 0;
+      }
     }
   });
   broadcastState();
