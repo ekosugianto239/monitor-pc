@@ -20,7 +20,9 @@ for (let i = 1; i <= 9; i++) {
     vga: 'RTX 2060', 
     endTime: null,
     bookedBy: '',
-    paymentStatus: ''
+    paymentStatus: '',
+    scheduledStartTime: 0,
+    scheduledDuration: 5
   };
 }
 
@@ -73,9 +75,9 @@ app.post('/api/update-war-config', (req, res) => {
   res.status(400).json({ error: 'Data config tidak valid' });
 });
 
-// Endpoint simpan data booking manual (Nama Pemesan & Status Pembayaran)
+// Endpoint simpan data booking manual (Nama Pemesan, Status Pembayaran, Jam Mulai & Durasi)
 app.post('/api/update-booking', (req, res) => {
-  const { pcName, bookedBy, paymentStatus, password } = req.body;
+  const { pcName, bookedBy, paymentStatus, scheduledStartTime, scheduledDuration, password } = req.body;
 
   if (password !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Password Kasir Salah!' });
@@ -86,6 +88,8 @@ app.post('/api/update-booking', (req, res) => {
   if (pcName && pcStatusData[pcName]) {
     pcStatusData[pcName].bookedBy = bookedBy || '';
     pcStatusData[pcName].paymentStatus = paymentStatus || '';
+    pcStatusData[pcName].scheduledStartTime = scheduledStartTime || 0;
+    pcStatusData[pcName].scheduledDuration = scheduledDuration || 5;
     
     broadcastState();
     return res.json({ success: true });
@@ -139,6 +143,9 @@ app.post('/api/update-manual', (req, res) => {
       // Reset ke TERSEDIA atau OFF
       pc.status = status;
       pc.endTime = null;
+      pc.bookedBy = '';
+      pc.paymentStatus = '';
+      pc.scheduledStartTime = 0;
     }
     
     broadcastState();
@@ -147,14 +154,28 @@ app.post('/api/update-manual', (req, res) => {
   res.status(400).json({ error: 'Gagal update status' });
 });
 
-// Auto-reset status saat countdown selesai per detik
+// Auto-checker per detik: Pemicu Otomatis Booking & Reset Timer
 setInterval(() => {
-  const now = Math.floor(Date.now() / 1000);
+  const nowMs = Date.now();
+  const nowSec = Math.floor(nowMs / 1000);
+
   Object.keys(pcStatusData).forEach(pcKey => {
     const pc = pcStatusData[pcKey];
-    if (pc.status === 'used' && pc.endTime && now >= pc.endTime) {
+
+    // 1. AUTO TRIGGER: Jika jam sekarang sudah mencapai/melewati scheduledStartTime
+    if (pc.bookedBy && pc.scheduledStartTime && nowMs >= pc.scheduledStartTime && pc.status !== 'used') {
+      pc.status = 'used';
+      const durationHours = pc.scheduledDuration || 5;
+      pc.endTime = nowSec + (durationHours * 3600);
+      pc.scheduledStartTime = 0; // Hapus jadwal agar tidak terpicu ulang
+    }
+
+    // 2. AUTO RESET: Jika countdown waktu pemakaian telah selesai
+    if (pc.status === 'used' && pc.endTime && nowSec >= pc.endTime) {
       pc.status = 'available';
       pc.endTime = null;
+      pc.bookedBy = '';
+      pc.paymentStatus = '';
     }
   });
   broadcastState();

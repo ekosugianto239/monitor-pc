@@ -141,7 +141,7 @@
     /* Grid Layout PC */
     .pc-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
       gap: 20px;
     }
 
@@ -149,7 +149,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 14px;
-      padding: 20px;
+      padding: 18px;
       text-align: center;
       transition: border-color 0.2s;
     }
@@ -160,10 +160,31 @@
     .status-badge {
       font-size: 0.82rem;
       font-weight: 700;
-      padding: 6px 12px;
+      padding: 5px 12px;
       border-radius: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
       display: inline-block;
+    }
+
+    /* Modul Booking Box */
+    .booking-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .booking-box input {
+      width: 100%;
+      background: #1a1d29;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      outline: none;
     }
 
     /* Control Button Groups */
@@ -258,7 +279,7 @@
           <input type="datetime-local" id="warStartTime">
         </div>
         <div class="form-group">
-          <label>Harga Promo / Slot</label>
+          <label>Harga/slot</label>
           <input type="text" id="warPrice" value="Rp 15.000 / 5 Jam">
         </div>
         <div class="form-group">
@@ -286,7 +307,15 @@
     const defaultPCState = {};
     for (let i = 1; i <= 9; i++) {
       const pcId = `ONI-${i < 10 ? '0' + i : i}`;
-      defaultPCState[pcId] = { id: pcId, status: 'available', endTime: 0 };
+      defaultPCState[pcId] = { 
+        id: pcId, 
+        status: 'available', 
+        endTime: 0, 
+        bookedBy: '', 
+        paymentStatus: '', 
+        scheduledStartTime: 0, 
+        scheduledDuration: 5 
+      };
     }
 
     function formatCountdown(endTime) {
@@ -306,7 +335,45 @@
       return `(${jStr}:${mStr}:${dStr})`;
     }
 
-    // Fungsi Broadcast Pengaturan War Tiket ke Server & Client
+    // Fungsi Simpan Pre-Booking Terjadwal
+    function saveBooking(pcKey, payStatus) {
+      const pass = document.getElementById('adminPass').value;
+      const nameInput = document.getElementById(`bookName-${pcKey}`).value;
+      const timeInput = document.getElementById(`bookTime-${pcKey}`).value;
+      const durationInput = parseInt(document.getElementById(`bookDuration-${pcKey}`).value) || 5;
+
+      const startTimeMs = timeInput ? new Date(timeInput).getTime() : 0;
+
+      const localCache = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
+      if (!localCache[pcKey]) localCache[pcKey] = { id: pcKey, status: 'available', endTime: 0 };
+
+      localCache[pcKey].bookedBy = nameInput;
+      localCache[pcKey].paymentStatus = payStatus;
+      localCache[pcKey].scheduledStartTime = startTimeMs;
+      localCache[pcKey].scheduledDuration = durationInput;
+
+      localStorage.setItem('oni_pc_status', JSON.stringify(localCache));
+
+      const merged = { ...defaultPCState, ...localCache };
+      renderAdminGrid(Object.values(merged));
+
+      fetch('/api/update-booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pcName: pcKey,
+          bookedBy: nameInput,
+          paymentStatus: payStatus,
+          scheduledStartTime: startTimeMs,
+          scheduledDuration: durationInput,
+          password: pass
+        })
+      }).then(res => {
+        if (!res.ok) alert('Password Kasir Salah atau Akses Ditolak!');
+      });
+    }
+
+    // Fungsi Broadcast Pengaturan War Tiket
     function saveWarConfig(active) {
       const pass = document.getElementById('adminPass').value;
       const title = document.getElementById('warTitle').value;
@@ -358,7 +425,17 @@
       }
 
       const localCache = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
-      localCache[pcKey] = { id: pcKey, status: status, endTime: targetEndTime };
+      const prevPc = localCache[pcKey] || {};
+
+      localCache[pcKey] = { 
+        id: pcKey, 
+        status: status, 
+        endTime: targetEndTime,
+        bookedBy: prevPc.bookedBy || '',
+        paymentStatus: prevPc.paymentStatus || '',
+        scheduledStartTime: prevPc.scheduledStartTime || 0,
+        scheduledDuration: prevPc.scheduledDuration || 5
+      };
       localStorage.setItem('oni_pc_status', JSON.stringify(localCache));
       
       const merged = { ...defaultPCState, ...localCache };
@@ -406,11 +483,45 @@
           statusLabel = 'OFF / MATI';
         }
 
+        // Format Date Picker Default Value
+        let timeFormatted = '';
+        if (pc.scheduledStartTime) {
+          const localDate = new Date(pc.scheduledStartTime - (new Date().getTimezoneOffset() * 60000));
+          timeFormatted = localDate.toISOString().slice(0, 16);
+        }
+
+        const bookingInfoText = pc.bookedBy 
+          ? `<div style="margin-top: 6px; font-size: 0.72rem; color: #00ff66; font-weight: 800;"><i class="fas fa-user-check"></i> ${pc.bookedBy} (${pc.paymentStatus || 'BOOKED'})</div>` 
+          : '';
+
         grid.innerHTML += `
           <div class="pc-card">
             <div class="pc-header">${pc.id}</div>
             <div class="status-badge" style="${statusStyle}">${statusLabel}</div>
             
+            <!-- Modul Pre-Booking Terjadwal -->
+            <div class="booking-box">
+              <div class="btn-section-title" style="margin-bottom: 4px;"><i class="fas fa-calendar-alt"></i> Pre-Booking Hari Minggu</div>
+              <input type="text" id="bookName-${pc.id}" value="${pc.bookedBy || ''}" placeholder="Nama Pemesan..." style="margin-bottom: 6px;">
+              
+              <div style="margin-bottom: 6px;">
+                <label style="font-size: 0.65rem; color: var(--text-muted); display:block; margin-bottom: 2px;">Jam Mulai Main (Hari-H):</label>
+                <input type="datetime-local" id="bookTime-${pc.id}" value="${timeFormatted}">
+              </div>
+
+              <div style="margin-bottom: 8px;">
+                <label style="font-size: 0.65rem; color: var(--text-muted); display:block; margin-bottom: 2px;">Durasi Main (Jam):</label>
+                <input type="number" id="bookDuration-${pc.id}" value="${pc.scheduledDuration || 5}" min="1" max="24">
+              </div>
+
+              <div style="display: flex; gap: 4px;">
+                <button class="btn btn-pkg" style="font-size: 0.68rem; padding: 5px;" onclick="saveBooking('${pc.id}', 'LUNAS')"><i class="fas fa-check-circle"></i> Lunas</button>
+                <button class="btn btn-time" style="font-size: 0.68rem; padding: 5px;" onclick="saveBooking('${pc.id}', 'DP')"><i class="fas fa-clock"></i> DP</button>
+                <button class="btn btn-off" style="font-size: 0.68rem; padding: 5px;" onclick="saveBooking('${pc.id}', '')"><i class="fas fa-trash"></i> Hapus</button>
+              </div>
+              ${bookingInfoText}
+            </div>
+
             <div class="btn-section-title">Billing Reguler</div>
             <div class="btn-group">
               <button class="btn btn-time" onclick="setStatus('${pc.id}', 'used', 1)">+1j</button>
@@ -440,7 +551,7 @@
     const initialMerged = { ...defaultPCState, ...cachedAdminData };
     renderAdminGrid(Object.values(initialMerged));
 
-    // Load war config lokal jika ada
+    // Load war config lokal
     const cachedWar = JSON.parse(localStorage.getItem('oni_war_config') || '{}');
     if (cachedWar.title) document.getElementById('warTitle').value = cachedWar.title;
     if (cachedWar.price) document.getElementById('warPrice').value = cachedWar.price;

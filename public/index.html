@@ -586,7 +586,7 @@
 
   </div>
 
-  <!-- Modal Booking 3D -->
+  <!-- Modal Booking Popup -->
   <div class="modal-overlay" id="bookingModal">
     <div class="modal-card">
       <h2 id="modalPcTitle">ONI-01</h2>
@@ -627,7 +627,15 @@
     const defaultPCState = {};
     for (let i = 1; i <= 9; i++) {
       const pcId = `ONI-${i < 10 ? '0' + i : i}`;
-      defaultPCState[pcId] = { id: pcId, status: 'available', endTime: 0 };
+      defaultPCState[pcId] = { 
+        id: pcId, 
+        status: 'available', 
+        endTime: 0, 
+        bookedBy: '', 
+        paymentStatus: '', 
+        scheduledStartTime: 0, 
+        scheduledDuration: 5 
+      };
     }
 
     function formatCountdown(endTime) {
@@ -712,7 +720,7 @@
         }
       }
 
-      const now = Math.floor(Date.now() / 1000);
+      const nowSec = Math.floor(Date.now() / 1000);
 
       pcList.forEach((pc) => {
         const targetNode = document.getElementById(`node-${pc.id}`);
@@ -721,7 +729,7 @@
         let currentStatus = pc.status || 'available';
         let endTime = pc.endTime || 0;
 
-        if (endTime && endTime <= now) {
+        if (endTime && endTime <= nowSec) {
           currentStatus = 'available';
           endTime = 0;
         }
@@ -729,20 +737,45 @@
         const countdown = formatCountdown(endTime);
         let stateClass = 'state-available';
         let statusText = 'READY';
+        let floatBadgeHTML = '';
 
-        if (currentStatus === 'off') {
-          stateClass = 'state-off';
-          statusText = 'OFF';
-        } else if (currentStatus === 'used') {
+        // 1. Status Terpakai (Sedang Berjalan)
+        if (currentStatus === 'used') {
           stateClass = 'state-used';
           statusText = countdown ? countdown : 'USED';
-        }
+          if (countdown) {
+            floatBadgeHTML = `<div class="float-timer-3d">${countdown}</div>`;
+          }
+        } 
+        // 2. Status Pre-Booking Terjadwal (Belum Jam H)
+        else if (pc.bookedBy) {
+          const isLunas = pc.paymentStatus === 'LUNAS';
+          stateClass = 'state-available';
+          
+          let timeLabel = '';
+          if (pc.scheduledStartTime) {
+            const d = new Date(pc.scheduledStartTime);
+            const jamStr = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+            const minStr = d.getMinutes() < 10 ? '0' + minStr : d.getMinutes();
+            timeLabel = ` Jam ${jamStr}:${minStr}`;
+          }
 
-        const floatTimerHTML = (currentStatus === 'used' && countdown) ? `<div class="float-timer-3d">${countdown}</div>` : '';
+          statusText = `BOOKED (${pc.paymentStatus || 'DP'})`;
+          floatBadgeHTML = `
+            <div style="position: absolute; top: -14px; background: ${isLunas ? '#00ff66' : '#ffb703'}; color: #000; font-size: 0.58rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; box-shadow: 0 0 8px ${isLunas ? 'rgba(0, 255, 102, 0.6)' : 'rgba(255, 183, 3, 0.6)'}; white-space: nowrap; z-index: 5;">
+              <i class="fas fa-user-check"></i> ${pc.bookedBy} ${timeLabel}
+            </div>
+          `;
+        } 
+        // 3. Status Matikan / Off
+        else if (currentStatus === 'off') {
+          stateClass = 'state-off';
+          statusText = 'OFF';
+        }
 
         targetNode.innerHTML = `
           <div class="pc-3d-node ${stateClass}" onclick="openModal('${pc.id}', '${currentStatus}')">
-            ${floatTimerHTML}
+            ${floatBadgeHTML}
             <div class="cpu-shelf-visual">
               <span class="cpu-led-strip"></span>
               <span class="cpu-led-strip"></span>
@@ -751,7 +784,7 @@
               <i class="fas fa-desktop"></i>
             </div>
             <span class="pc-number-3d">${pc.id}</span>
-            <span class="node-status-text">${statusText}</span>
+            <span class="node-status-text" style="${pc.bookedBy && currentStatus !== 'used' ? 'background: rgba(255, 183, 3, 0.2); color: #ffb703;' : ''}">${statusText}</span>
             <i class="fas fa-headphones headset-icon-hang"></i>
           </div>
         `;
