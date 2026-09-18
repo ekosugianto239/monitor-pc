@@ -301,7 +301,7 @@
   <!-- Socket.IO Engine & Local Storage Persistence -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io('https://oni-gaming-zone.up.railway.app');
+    const socket = io();
 
     // Default ONI-01 s/d ONI-09
     const defaultPCState = {};
@@ -353,9 +353,6 @@
       localCache[pcKey].scheduledDuration = durationInput;
 
       localStorage.setItem('oni_pc_status', JSON.stringify(localCache));
-
-      const merged = { ...defaultPCState, ...localCache };
-      renderAdminGrid(Object.values(merged));
 
       fetch('/api/update-booking', {
         method: 'POST',
@@ -437,9 +434,6 @@
         scheduledDuration: prevPc.scheduledDuration || 5
       };
       localStorage.setItem('oni_pc_status', JSON.stringify(localCache));
-      
-      const merged = { ...defaultPCState, ...localCache };
-      renderAdminGrid(Object.values(merged));
 
       fetch('/api/update-manual', {
         method: 'POST',
@@ -457,6 +451,12 @@
     }
 
     function renderAdminGrid(pcList) {
+      // CEK FOKUS: Tahan re-render jika kasir sedang mengetik di salah satu elemen input
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+        return;
+      }
+
       const grid = document.getElementById('adminGrid');
       grid.innerHTML = '';
       const now = Math.floor(Date.now() / 1000);
