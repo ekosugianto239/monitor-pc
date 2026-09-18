@@ -20,16 +20,18 @@
       --accent-red: #ff2a5f;
       --accent-yellow: #ffb703;
       --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
       --text-muted: #94a3b8;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg-main); color: #f8fafc; padding: 25px 20px; }
 
+    .container { max-width: 1200px; margin: 0 auto; }
+
     /* Top Bar Header */
     .header-bar {
-      max-width: 1200px;
-      margin: 0 auto 25px;
+      margin-bottom: 25px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -69,13 +71,78 @@
       width: 110px;
     }
 
-    /* Grid Layout */
+    /* Modul Panel War Tiket */
+    .war-control-panel {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(18, 20, 29, 0.95) 100%);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 14px;
+      padding: 20px 25px;
+      margin-bottom: 25px;
+    }
+
+    .war-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .war-header h2 { font-size: 1.1rem; color: var(--accent-purple); display: flex; align-items: center; gap: 10px; }
+    
+    .war-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .form-group input {
+      background: #1a1d29;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .war-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .btn-war-start {
+      background: var(--accent-purple);
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-war-stop {
+      background: rgba(255, 42, 95, 0.2);
+      color: var(--accent-red);
+      border: 1px solid rgba(255, 42, 95, 0.4);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Grid Layout PC */
     .pc-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
     }
 
     .pc-card {
@@ -161,20 +228,54 @@
 </head>
 <body>
 
-  <!-- Top Navigation Header -->
-  <div class="header-bar">
-    <div class="brand-info">
-      <h1><i class="fas fa-sliders"></i> PANEL KASIR WARNET</h1>
-      <p>ONI GAMING ZONE — Management Control System</p>
+  <div class="container">
+    <!-- Top Navigation Header -->
+    <div class="header-bar">
+      <div class="brand-info">
+        <h1><i class="fas fa-sliders"></i> PANEL KASIR WARNET</h1>
+        <p>ONI GAMING ZONE — Management Control System</p>
+      </div>
+      <div class="pass-box">
+        <label><i class="fas fa-key"></i> Key Pass:</label>
+        <input type="password" id="adminPass" value="oni123">
+      </div>
     </div>
-    <div class="pass-box">
-      <label><i class="fas fa-key"></i> Key Pass:</label>
-      <input type="password" id="adminPass" value="oni123">
-    </div>
-  </div>
 
-  <!-- Grid PC Monitoring -->
-  <div class="pc-grid" id="adminGrid"></div>
+    <!-- Modul Konfigurasi War Tiket -->
+    <div class="war-control-panel">
+      <div class="war-header">
+        <h2><i class="fas fa-bolt"></i> MODUL WAR TIKET PROMO</h2>
+        <span id="warStatusTag" style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Status: NONAKTIF</span>
+      </div>
+
+      <div class="war-form-grid">
+        <div class="form-group">
+          <label>Judul Event / Promo</label>
+          <input type="text" id="warTitle" value="WAR TIKET PROMO BEGADANG">
+        </div>
+        <div class="form-group">
+          <label>Jam Buka War (Countdown Target)</label>
+          <input type="datetime-local" id="warStartTime">
+        </div>
+        <div class="form-group">
+          <label>Harga Promo / Slot</label>
+          <input type="text" id="warPrice" value="Rp 15.000 / 5 Jam">
+        </div>
+        <div class="form-group">
+          <label>No. WhatsApp Kasir (Booking)</label>
+          <input type="text" id="adminWA" value="6281234567890" placeholder="628xxx">
+        </div>
+      </div>
+
+      <div class="war-actions">
+        <button class="btn-war-start" onclick="saveWarConfig(true)"><i class="fas fa-play"></i> AKTIFKAN & BROADCAST WAR TIKET</button>
+        <button class="btn-war-stop" onclick="saveWarConfig(false)"><i class="fas fa-stop"></i> NONAKTIFKAN WAR TIKET</button>
+      </div>
+    </div>
+
+    <!-- Grid PC Monitoring -->
+    <div class="pc-grid" id="adminGrid"></div>
+  </div>
 
   <!-- Socket.IO Engine & Local Storage Persistence -->
   <script src="/socket.io/socket.io.js"></script>
@@ -205,10 +306,40 @@
       return `(${jStr}:${mStr}:${dStr})`;
     }
 
-    // Fungsi Pengirim Data Update Manual
+    // Fungsi Broadcast Pengaturan War Tiket ke Server & Client
+    function saveWarConfig(active) {
+      const pass = document.getElementById('adminPass').value;
+      const title = document.getElementById('warTitle').value;
+      const startTime = document.getElementById('warStartTime').value;
+      const price = document.getElementById('warPrice').value;
+      const wa = document.getElementById('adminWA').value;
+
+      const warConfig = {
+        active: active,
+        title: title,
+        startTime: startTime ? new Date(startTime).getTime() : 0,
+        price: price,
+        waNumber: wa
+      };
+
+      document.getElementById('warStatusTag').innerHTML = active 
+        ? '<span style="color: #00ff66;"><i class="fas fa-circle-dot"></i> AKTIF</span>' 
+        : '<span style="color: #ff2a5f;"><i class="fas fa-circle-dot"></i> NONAKTIF</span>';
+
+      localStorage.setItem('oni_war_config', JSON.stringify(warConfig));
+
+      fetch('/api/update-war-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ config: warConfig, password: pass })
+      }).catch(() => {});
+      
+      socket.emit('updateWarConfig', warConfig);
+    }
+
+    // Fungsi Pengirim Data Update Status PC
     function setStatus(pcKey, status, hours = 0, packageType = '') {
       const pass = document.getElementById('adminPass').value;
-      
       const now = Math.floor(Date.now() / 1000);
       let targetEndTime = 0;
 
@@ -304,10 +435,16 @@
       });
     }
 
-    // Load data awal langsung dari gabungan default + cache lokal
+    // Load data awal
     const cachedAdminData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
     const initialMerged = { ...defaultPCState, ...cachedAdminData };
     renderAdminGrid(Object.values(initialMerged));
+
+    // Load war config lokal jika ada
+    const cachedWar = JSON.parse(localStorage.getItem('oni_war_config') || '{}');
+    if (cachedWar.title) document.getElementById('warTitle').value = cachedWar.title;
+    if (cachedWar.price) document.getElementById('warPrice').value = cachedWar.price;
+    if (cachedWar.waNumber) document.getElementById('adminWA').value = cachedWar.waNumber;
 
     // Listener sync Socket.IO
     socket.on('pcStatusUpdate', (payload) => {
@@ -322,14 +459,14 @@
       renderAdminGrid(Object.values(merged));
     });
 
-    // Auto-refresh countdown setiap 1 detik
+    // Auto-refresh countdown per detik
     setInterval(() => {
       const localData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
       const merged = { ...defaultPCState, ...localData };
       renderAdminGrid(Object.values(merged));
     }, 1000);
 
-    // Kirim sinyal heartbeat ke server
+    // Heartbeat ke server
     setInterval(() => {
       fetch('/api/admin-heartbeat', { method: 'POST' });
     }, 3000);

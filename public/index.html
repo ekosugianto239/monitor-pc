@@ -18,6 +18,7 @@
       --accent-green: #00ff66;
       --accent-red: #ff2a5f;
       --accent-purple: #8a2be2;
+      --accent-yellow: #ffb703;
       --accent-blue: #00d4ff;
       --border-color: rgba(0, 212, 255, 0.15);
       --text-muted: #94a3b8;
@@ -77,6 +78,58 @@
     header p { color: var(--text-muted); font-size: 0.9rem; max-width: 600px; margin: 4px auto 0; }
 
     .container { max-width: 1100px; margin: 0 auto; padding: 20px 10px; }
+
+    /* Banner Promo War Tiket */
+    .war-banner-wrapper {
+      display: none;
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.25) 0%, rgba(255, 183, 3, 0.15) 100%);
+      border: 2px solid var(--accent-yellow);
+      box-shadow: 0 0 20px rgba(255, 183, 3, 0.3);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 15px rgba(255, 183, 3, 0.2); }
+      50% { box-shadow: 0 0 25px rgba(255, 183, 3, 0.5); }
+      100% { box-shadow: 0 0 15px rgba(255, 183, 3, 0.2); }
+    }
+
+    .war-info h2 { font-size: 1.1rem; color: var(--accent-yellow); display: flex; align-items: center; gap: 8px; }
+    .war-info p { font-size: 0.85rem; color: #f1f5f9; margin-top: 2px; }
+
+    .war-timer-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--accent-yellow);
+      padding: 6px 14px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .war-timer-box label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; display: block; }
+    .war-timer-box span { font-size: 1.1rem; font-weight: 800; color: #00ff66; letter-spacing: 1px; }
+
+    .btn-war-book {
+      background: var(--accent-yellow);
+      color: #000;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-war-book:hover { transform: scale(1.04); }
 
     /* Warning Banner Weekend */
     .weekend-notice {
@@ -432,6 +485,19 @@
 
   <div class="container">
 
+    <!-- Banner War Tiket Realtime -->
+    <div class="war-banner-wrapper" id="warBanner">
+      <div class="war-info">
+        <h2 id="warDisplayTitle"><i class="fas fa-bolt"></i> WAR TIKET PROMO BEGADANG</h2>
+        <p id="warDisplayPrice">Harga Khusus: Rp 15.000 / 5 Jam</p>
+      </div>
+      <div class="war-timer-box">
+        <label>Dimulai Dalam</label>
+        <span id="warCountdownDisplay">00:00:00</span>
+      </div>
+      <a href="#" id="warBookBtn" target="_blank" class="btn-war-book"><i class="fab fa-whatsapp"></i> WAR TIKET SEKARANG</a>
+    </div>
+
     <!-- Warning Sabtu & Minggu -->
     <div class="weekend-notice" id="weekendNotice">
       <i class="fas fa-exclamation-triangle"></i>
@@ -543,11 +609,21 @@
     const adminBadge = document.getElementById('adminBadge');
     const weekendNotice = document.getElementById('weekendNotice');
     
+    // War Banner Elements
+    const warBanner = document.getElementById('warBanner');
+    const warDisplayTitle = document.getElementById('warDisplayTitle');
+    const warDisplayPrice = document.getElementById('warDisplayPrice');
+    const warCountdownDisplay = document.getElementById('warCountdownDisplay');
+    const warBookBtn = document.getElementById('warBookBtn');
+
+    let currentWarConfig = JSON.parse(localStorage.getItem('oni_war_config') || '{}');
+    let currentAdminWA = '6281234567890';
+
     const today = new Date().getDay();
     const isWeekend = (today === 0 || today === 6);
     if (isWeekend) weekendNotice.style.display = 'flex';
 
-    // State Default ONI-01 s/d ONI-09 agar kartu PC LANGSUNG TAMPIL saat halaman dibuka
+    // State Default ONI-01 s/d ONI-09
     const defaultPCState = {};
     for (let i = 1; i <= 9; i++) {
       const pcId = `ONI-${i < 10 ? '0' + i : i}`;
@@ -563,6 +639,36 @@
       const menit = Math.floor((sisaDetik % 3600) / 60);
       const detik = sisaDetik % 60;
       return `${jam < 10 ? '0'+jam : jam}:${menit < 10 ? '0'+menit : menit}:${detik < 10 ? '0'+detik : detik}`;
+    }
+
+    function updateWarBannerUI(config) {
+      if (!config || !config.active) {
+        warBanner.style.display = 'none';
+        return;
+      }
+
+      warBanner.style.display = 'flex';
+      warDisplayTitle.innerHTML = `<i class="fas fa-bolt"></i> ${config.title || 'WAR TIKET PROMO'}`;
+      warDisplayPrice.innerText = `Harga Promo: ${config.price || 'Sesuai Promo'}`;
+      currentAdminWA = config.waNumber || currentAdminWA;
+
+      const waMsg = encodeURIComponent(`Halo Admin ONI GAMING ZONE, saya mau ikut ${config.title || 'War Tiket Promo'} (${config.price || ''})!`);
+      warBookBtn.href = `https://wa.me/${currentAdminWA}?text=${waMsg}`;
+
+      if (config.startTime) {
+        const now = Date.now();
+        const diff = Math.floor((config.startTime - now) / 1000);
+        if (diff > 0) {
+          const j = Math.floor(diff / 3600);
+          const m = Math.floor((diff % 3600) / 60);
+          const d = diff % 60;
+          warCountdownDisplay.innerText = `${j<10?'0'+j:j}:${m<10?'0'+m:m}:${d<10?'0'+d:d}`;
+        } else {
+          warCountdownDisplay.innerText = 'DIBUKA!';
+        }
+      } else {
+        warCountdownDisplay.innerText = 'DIBUKA!';
+      }
     }
 
     function openModal(pcId, pcStatus) {
@@ -583,7 +689,7 @@
         waBtn.style.background = '#10b981';
         waBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Booking via WhatsApp';
         waBtn.onclick = null;
-        waBtn.href = `https://wa.me/6285212079989?text=Halo%20Admin%20ONI%20GAMING%20ZONE,%20saya%20mau%20booking%20PC%20${pcId}`;
+        waBtn.href = `https://wa.me/${currentAdminWA}?text=Halo%20Admin%20ONI%20GAMING%20ZONE,%20saya%20mau%20booking%20PC%20${pcId}`;
       }
 
       modal.style.display = 'flex';
@@ -652,12 +758,13 @@
       });
     }
 
-    // Render Instan Pertama: Gabungkan LocalStorage dengan Default PC Data
+    // Render Awal dari Cache LocalStorage
     const cachedData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
     const initialPCData = { ...defaultPCState, ...cachedData };
     renderPCData(Object.values(initialPCData), false);
+    updateWarBannerUI(currentWarConfig);
 
-    // Sync Data Realtime dari Socket.IO Server
+    // Sync Socket.IO
     socket.on('pcStatusUpdate', (payload) => {
       const pcData = payload.pcData || payload;
       const adminActive = payload.adminActive || false;
@@ -670,11 +777,18 @@
       renderPCData(pcList, adminActive);
     });
 
-    // Auto-refresh timer independen per 1 detik
+    socket.on('warConfigUpdate', (config) => {
+      currentWarConfig = config;
+      localStorage.setItem('oni_war_config', JSON.stringify(config));
+      updateWarBannerUI(config);
+    });
+
+    // Refresh countdown per detik
     setInterval(() => {
       const localData = JSON.parse(localStorage.getItem('oni_pc_status') || '{}');
       const mergedData = { ...defaultPCState, ...localData };
       renderPCData(Object.values(mergedData));
+      updateWarBannerUI(currentWarConfig);
     }, 1000);
   </script>
 </body>

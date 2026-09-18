@@ -17,16 +17,26 @@ for (let i = 1; i <= 9; i++) {
   pcStatusData[pcKey] = { id: pcKey, status: 'available', vga: 'RTX 2060', endTime: null };
 }
 
+// Penampung data War Tiket Promo
+let warConfigData = {
+  active: false,
+  title: 'WAR TIKET PROMO BEGADANG',
+  startTime: 0,
+  price: 'Rp 15.000 / 5 Jam',
+  waNumber: '6281234567890'
+};
+
 // Menampung timestamp terakhir sinyal dari admin.html
 let lastAdminHeartbeat = 0;
 
-// Helper untuk broadcast data status PC + status admin ke semua client/browser
+// Helper untuk broadcast data status PC + War Config + status admin ke semua client/browser
 function broadcastState() {
   const isAdminActive = (Date.now() - lastAdminHeartbeat) < 8000; // Aktif jika ada sinyal < 8 detik
   io.emit('pcStatusUpdate', {
     pcData: pcStatusData,
     adminActive: isAdminActive
   });
+  io.emit('warConfigUpdate', warConfigData);
 }
 
 // Route khusus halaman admin kasir
@@ -39,6 +49,21 @@ app.post('/api/admin-heartbeat', (req, res) => {
   lastAdminHeartbeat = Date.now();
   broadcastState();
   return res.json({ success: true });
+});
+
+// Endpoint update konfigurasi War Tiket dari admin.html
+app.post('/api/update-war-config', (req, res) => {
+  const { config, password } = req.body;
+  if (password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Password Kasir Salah!' });
+  }
+
+  if (config) {
+    warConfigData = { ...warConfigData, ...config };
+    broadcastState();
+    return res.json({ success: true });
+  }
+  res.status(400).json({ error: 'Data config tidak valid' });
 });
 
 // Endpoint update manual dengan proteksi password & akumulasi jam
@@ -110,6 +135,11 @@ setInterval(() => {
 
 io.on('connection', (socket) => {
   broadcastState();
+
+  socket.on('updateWarConfig', (config) => {
+    warConfigData = { ...warConfigData, ...config };
+    io.emit('warConfigUpdate', warConfigData);
+  });
 });
 
 http.listen(PORT, '0.0.0.0', () => {
