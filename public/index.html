@@ -740,19 +740,9 @@
         let statusText = 'READY';
         let floatBadgeHTML = '';
 
-        // 1. Status Terpakai (Sedang Berjalan)
-        if (currentStatus === 'used') {
-          stateClass = 'state-used';
-          statusText = countdown ? countdown : 'USED';
-          if (countdown) {
-            floatBadgeHTML = `<div class="float-timer-3d">${countdown}</div>`;
-          }
-        } 
-        // 2. Status Pre-Booking Terjadwal (Belum Jam H)
-        else if (pc.bookedBy) {
+        // 1. BUAT BADGE FLOATING UNTUK PRE-BOOKING JIKA TERSEDIA NAMA PEMESAN
+        if (pc.bookedBy) {
           const isLunas = pc.paymentStatus === 'LUNAS';
-          stateClass = 'state-available';
-          
           let timeLabel = '';
           if (pc.scheduledStartTime) {
             const d = new Date(pc.scheduledStartTime);
@@ -761,14 +751,27 @@
             timeLabel = ` Jam ${jamStr}:${minStr}`;
           }
 
-          statusText = `BOOKED (${pc.paymentStatus || 'DP'})`;
           floatBadgeHTML = `
             <div style="position: absolute; top: -14px; background: ${isLunas ? '#00ff66' : '#ffb703'}; color: #000; font-size: 0.58rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; box-shadow: 0 0 8px ${isLunas ? 'rgba(0, 255, 102, 0.6)' : 'rgba(255, 183, 3, 0.6)'}; white-space: nowrap; z-index: 5;">
               <i class="fas fa-user-check"></i> ${pc.bookedBy} ${timeLabel}
             </div>
           `;
+        }
+
+        // 2. TENTUKAN TAMPILAN STATUS PC (USED / AVAILABLE / OFF)
+        if (currentStatus === 'used') {
+          stateClass = 'state-used';
+          statusText = countdown ? countdown : 'USED';
+          
+          // Jika PC sedang dipakai & TIDAK ADA booking khusus, tampilkan countdown waktu main
+          if (countdown && !pc.bookedBy) {
+            floatBadgeHTML = `<div class="float-timer-3d">${countdown}</div>`;
+          }
         } 
-        // 3. Status Matikan / Off
+        else if (pc.bookedBy) {
+          stateClass = 'state-available';
+          statusText = `BOOKED (${pc.paymentStatus || 'DP'})`;
+        } 
         else if (currentStatus === 'off') {
           stateClass = 'state-off';
           statusText = 'OFF';
