@@ -14,7 +14,14 @@ app.use(express.json());
 let pcStatusData = {};
 for (let i = 1; i <= 9; i++) {
   const pcKey = `ONI-${i < 10 ? '0' + i : i}`;
-  pcStatusData[pcKey] = { id: pcKey, status: 'available', vga: 'RTX 2060', endTime: null };
+  pcStatusData[pcKey] = { 
+    id: pcKey, 
+    status: 'available', 
+    vga: 'RTX 2060', 
+    endTime: null,
+    bookedBy: '',
+    paymentStatus: ''
+  };
 }
 
 // Penampung data War Tiket Promo
@@ -64,6 +71,26 @@ app.post('/api/update-war-config', (req, res) => {
     return res.json({ success: true });
   }
   res.status(400).json({ error: 'Data config tidak valid' });
+});
+
+// Endpoint simpan data booking manual (Nama Pemesan & Status Pembayaran)
+app.post('/api/update-booking', (req, res) => {
+  const { pcName, bookedBy, paymentStatus, password } = req.body;
+
+  if (password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Password Kasir Salah!' });
+  }
+
+  lastAdminHeartbeat = Date.now();
+
+  if (pcName && pcStatusData[pcName]) {
+    pcStatusData[pcName].bookedBy = bookedBy || '';
+    pcStatusData[pcName].paymentStatus = paymentStatus || '';
+    
+    broadcastState();
+    return res.json({ success: true });
+  }
+  res.status(400).json({ error: 'Gagal update data booking' });
 });
 
 // Endpoint update manual dengan proteksi password & akumulasi jam
