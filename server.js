@@ -8,7 +8,15 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = "oni123"; // Ganti password kasir di sini
 
-app.use(express.static(path.join(__dirname, 'public')));
+// Matikan caching file statis agar update HTML/JS langsung terbaca di browser
+app.use(express.static(path.join(__dirname, 'public'), {
+  etag: false,
+  maxAge: 0,
+  setHeaders: (res) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  }
+}));
+
 app.use(express.json());
 
 let pcStatusData = {};
@@ -48,8 +56,9 @@ function broadcastState() {
   io.emit('warConfigUpdate', warConfigData);
 }
 
-// Route khusus halaman admin kasir
+// Route khusus halaman admin kasir (dengan Header No-Cache)
 app.get('/admin', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
