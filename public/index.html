@@ -603,7 +603,8 @@
   <!-- Realtime Persistent Socket & Timer Sync -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io('https://oni-gaming-zone.up.railway.app');
+    // Koneksi Socket.IO otomatis menyesuaikan host domain (Railway/Local)
+    const socket = io();
     const adminDot = document.getElementById('adminDot');
     const adminText = document.getElementById('adminText');
     const adminBadge = document.getElementById('adminBadge');
@@ -756,7 +757,7 @@
           if (pc.scheduledStartTime) {
             const d = new Date(pc.scheduledStartTime);
             const jamStr = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-            const minStr = d.getMinutes() < 10 ? '0' + minStr : d.getMinutes();
+            const minStr = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
             timeLabel = ` Jam ${jamStr}:${minStr}`;
           }
 
